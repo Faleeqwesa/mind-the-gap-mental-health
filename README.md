@@ -1,32 +1,26 @@
 # Mind the Gap
 
-Interactive CDC mental health indicator explorer, built for public health and healthcare teams. Choose an indicator, measure, demographic factor/group, locations, and years; inspect the chart and underlying table; review a concise summary and missing-year coverage.
+Live app: https://mind-the-gap-mental-health.streamlit.app/  
+Project site: https://faleeqwesa.github.io/mind-the-gap-mental-health/  
+Source: https://github.com/Faleeqwesa/mind-the-gap-mental-health
+
+Use the controls at the top of the Streamlit app to select any mental health question in the CDC subset, measure, demographic factor and groups, locations, and year range. The bar graph follows the filters; the summary follows the graph.
 
 ## Run locally
 
 ```bash
-python -m venv .venv
-# Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 streamlit run app.py
 ```
 
-The included `data/mental_health_cdi.csv` is the mental-health subset of the CDC U.S. Chronic Disease Indicators file supplied for this project. To use a newer source file, run `python data/extract.py "path/to/U.S._Chronic_Disease_Indicators.csv"`.
+The supplied `mental_health_cdi.csv` is the Mental Health topic subset from `U.S._Chronic_Disease_Indicators_20260930.csv`. Rebuild the extract with `python data/extract.py path/to/full_CDC_file.csv` in the source package.
 
-## Optional LLM agent
+## AI agent
 
-Without an API key the app shows a deterministic data summary. For the agent summary, set `OPENAI_API_KEY` (and optionally `MODEL_ID`) in the environment or Streamlit secrets. The fixed smolagents workflow calls a data inspection tool, then drafts a short summary from only the filtered values and coverage. The app catches agent errors and falls back to the data-only summary. Do not enter personal health information.
+The summary uses a smolagents `CodeAgent` with a data inspection tool when `OPENAI_API_KEY` is configured. Set it privately in Streamlit app Secrets; do not put a key in this public repository. Without a key, the app displays a transparent data-only summary. The agent is instructed to use filtered observations, note coverage, and avoid causal or medical claims.
 
-For Streamlit Community Cloud, deploy this repository with `app.py` as the entry point and add `OPENAI_API_KEY` under app Secrets. The GitHub Pages site is the project story and links to the live Streamlit app; GitHub Pages itself does not run Streamlit.
+## Methods and evaluation
 
-## Method and limits
+The app groups duplicate source rows by year, location, and selected group; reports missing years without filling them as zero; and fits a scikit-learn linear regression slope as a descriptive trend. `benchmark.py` reproduces 20 exact-value and missing-year cases against a simple overall-only baseline. Current results are 20/20 pipeline matches and 7/20 baseline matches. This evaluates retrieval/coverage calculations, not LLM response quality.
 
-The app keeps CDC rows with Topic `Mental Health`, filters all values interactively, and averages duplicate rows within year/location/group for plotting while showing the row count. It does not replace missing values. A scikit-learn linear regression slope summarizes direction across observed years; it is descriptive, not a forecast or causal estimate. CDC estimates may be missing, revised, or not comparable across measures, populations, and years. Check indicator definitions and footnotes before operational use.
-
-## Reproducible evaluation
-
-`benchmark.py` builds 20 fixed query cases from the included CSV and writes case-level results, a summary, and an SVG chart under `benchmark_results/`. It uses only the Python standard library and scores data retrieval and coverage, not LLM prose. Run with `python benchmark.py`. See `benchmark_results/README.md` for case design and interpretation.
-
-## Architecture
-
-Streamlit controls → CDC CSV filter → grouped annual values → Plotly chart/table + scikit-learn trend → smolagents inspection tool → grounded summary. If the LLM is unavailable, the deterministic summary remains usable.
+The project site explains the audience, product purpose, workflow, source, benchmark, and limitations. Add a walkthrough recording there to complete that portfolio element. See `BENCHMARK.md` for the benchmark scope.
