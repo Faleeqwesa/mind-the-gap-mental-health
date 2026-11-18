@@ -21,6 +21,7 @@ def load_data():
 
 d = load_data()
 st.subheader("1. Choose your filters")
+st.caption("Compare locations, demographic groups such as age or sex, or both. Choose one location to compare groups within it, or select multiple locations and groups.")
 questions = sorted(d.Question.dropna().unique())
 question = st.selectbox("Indicator / question", questions, index=questions.index("Depression among adults") if "Depression among adults" in questions else 0)
 metric_rows = d[d.Question == question]
