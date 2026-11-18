@@ -1,0 +1,5 @@
+# Benchmark protocol
+
+The script selects 18 repeatable cases across indicators, demographic categories/groups, two locations, and year windows, plus two empty-selection edge cases. It evaluates the exact annual means and missing-year set produced by the app's deterministic filtering/aggregation workflow against a direct calculation from the included CDC subset. The comparison baseline is a simpler query that ignores the requested demographic group and uses the overall population. Each case, including values and missing years, is preserved in `cases.csv`; aggregate rates are in `summary.json` and visualized in `benchmark.svg`.
+
+This is a reproducibility check of data retrieval and coverage, not an evaluation of LLM factuality, agent reliability under API failure, user satisfaction, or clinical usefulness. Since expected and actual values are computed from the same source extract with explicit filters, passing establishes calculation consistency, not correctness of CDC source data. A next benchmark iteration should add hand-reviewed edge fixtures and blinded human scoring of summaries, then test API outage and malformed responses.
