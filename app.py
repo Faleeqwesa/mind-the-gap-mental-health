@@ -24,6 +24,11 @@ st.subheader("1. Choose the question and values")
 q = st.selectbox("CDC question", o["questions"])
 u = "Number" if "average mentally unhealthy days" in q.lower() else "%"
 st.caption(f"Unit is set automatically to {u} for this question.")
+@st.cache_data
+def estimate_options(question, unit):
+    data = pd.read_csv("mental_health_cdi.csv", usecols=["Question", "DataValueUnit", "DataValueType"])
+    rows = data[(data["Question"] == question) & (data["DataValueUnit"] == unit)]
+    return sorted(rows["DataValueType"].dropna().unique())
 st.markdown("""<style>
 .stApp{background:radial-gradient(ellipse at 82% 10%,rgba(28,65,96,.22),transparent 34%),#080d13;color:#d9e6f1}
 [data-testid="stHeader"]{background:rgba(8,13,19,.94)}
@@ -37,7 +42,10 @@ div.stButton>button[kind="primary"]{background:#285f8a;border-color:#4c82ad;colo
 div.stButton>button[kind="primary"]:hover{background:#346f9c;border-color:#6996ba}
 [data-testid="stDataFrame"]{border:1px solid #263c50;border-radius:9px}
 </style>""",unsafe_allow_html=True)
-types = o["estimate_types"]
+types = estimate_options(q, u)
+if not types:
+    st.warning("No estimate types are available for this question and unit.")
+    st.stop()
 def_type = "Crude Mean" if u == "Number" else "Crude Prevalence"
 t = st.selectbox("Estimate type", types, index=types.index(def_type) if def_type in types else 0)
 y0, y1 = min(o["years"]), max(o["years"])
