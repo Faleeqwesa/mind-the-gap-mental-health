@@ -30,16 +30,18 @@ def estimate_options(question, unit):
     rows = data[(data["Question"] == question) & (data["DataValueUnit"] == unit)]
     return sorted(rows["DataValueType"].dropna().unique())
 st.markdown("""<style>
-.stApp{background:radial-gradient(ellipse at 82% 10%,rgba(28,65,96,.22),transparent 34%),#080d13;color:#d9e6f1}
+:root{--primary-color:#4b83af}
+.stApp,[data-testid="stAppViewContainer"]{background:radial-gradient(ellipse at 82% 10%,rgba(28,65,96,.22),transparent 34%),#080d13;color:#d9e6f1}
 [data-testid="stHeader"]{background:rgba(8,13,19,.94)}
 h1,h2,h3{color:#91b9dc}
 p,label,[data-testid="stWidgetLabel"] p{color:#d3e1ec}
-div[data-baseweb="select"]>div,div[data-baseweb="input"]>div{background:#111d29;border-color:#36516a;color:#e4eef6}
-[data-baseweb="tag"]{background:#254b6b!important;color:#e5f1fa!important}
+div[data-baseweb="select"]>div,div[data-baseweb="input"]>div{background:#111d29!important;border-color:#36516a!important;color:#e4eef6!important}
+[data-baseweb="tag"],[data-baseweb="tag"]>span{background:#254b6b!important;color:#e5f1fa!important}
+[data-baseweb="tag"] svg{fill:#cfe4f5!important}
 [data-baseweb="slider"] [role="slider"]{background:#78acd4!important;border:2px solid #c8e1f5!important;box-shadow:none!important}
 [data-baseweb="slider"] [data-testid="stTickBar"]{background:#345c7b!important}
-div.stButton>button[kind="primary"]{background:#285f8a;border-color:#4c82ad;color:#f1f7fb;border-radius:9px}
-div.stButton>button[kind="primary"]:hover{background:#346f9c;border-color:#6996ba}
+button[kind="primary"],button[data-testid="baseButton-primary"]{background:#285f8a!important;border-color:#4c82ad!important;color:#f1f7fb!important;border-radius:9px}
+button[kind="primary"]:hover,button[data-testid="baseButton-primary"]:hover{background:#346f9c!important;border-color:#6996ba!important}
 [data-testid="stDataFrame"]{border:1px solid #263c50;border-radius:9px}
 </style>""",unsafe_allow_html=True)
 types = estimate_options(q, u)
