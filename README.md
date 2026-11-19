@@ -4,7 +4,7 @@ Live app: https://mind-the-gap-mental-health.streamlit.app/
 Project site: https://faleeqwesa.github.io/mind-the-gap-mental-health/  
 Source: https://github.com/Faleeqwesa/mind-the-gap-mental-health
 
-Use the controls at the top of the Streamlit app to select any mental health question in the CDC subset, measure, demographic factor and groups, locations, and year range. The bar graph follows the filters; the summary follows the graph.
+Use the controls in the app to select a CDC mental health question, demographic factor and groups, locations, and year range. Year appears in Compare by only when you select a single year. The bar graph follows the filters, then the AI summary. The portfolio embeds the explorer on the same page.
 
 ## Run locally
 
@@ -17,7 +17,7 @@ The supplied `mental_health_cdi.csv` is the Mental Health topic subset from `U.S
 
 ## AI agent
 
-The summary uses a smolagents `CodeAgent` with a data inspection tool when `OPENAI_API_KEY` is configured. Set it privately in Streamlit app Secrets; do not put a key in this public repository. Without a key, the app displays a transparent data-only summary. The agent is instructed to use filtered observations, note coverage, and avoid causal or medical claims.
+The app calls the Render API at `https://cdc-mental-health-agent-api.onrender.com`. Its `/analyze` workflow uses smolagents with CDC retrieval, coverage checks, and analysis tools. The LLM key stays in Render’s private environment; the Streamlit app does not need an OpenAI key in its Secrets.
 
 ## Methods and evaluation
 
