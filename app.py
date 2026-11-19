@@ -1,94 +1,90 @@
 import os
-from pathlib import Path
-
+import requests
 import pandas as pd
 import plotly.express as px
 import streamlit as st
 from sklearn.linear_model import LinearRegression
 
-st.set_page_config(page_title="Mind the Gap | U.S. mental health", page_icon=":brain:", layout="wide")
+API = os.getenv("RENDER_API_BASE", "https://cdc-mental-health-agent-api.onrender.com").rstrip("/")
+st.set_page_config(page_title="Mind the Gap", page_icon="🧠", layout="wide")
 st.title("Mind the Gap")
-st.caption("Explore CDC mental health indicators across years and populations. This is descriptive surveillance data, not a diagnosis or clinical recommendation.")
+st.caption("Explore CDC mental health indicators. Select filters, choose what to compare, then view the graph and agent summary.")
 
-@st.cache_data
-def load_data():
-    path = "mental_health_cdi.csv" if Path("mental_health_cdi.csv").exists() else "data/mental_health_cdi.csv"
-    d = pd.read_csv(path)
-    d["Year"] = pd.to_numeric(d.YearStart, errors="coerce")
-    d["Value"] = pd.to_numeric(d.DataValue, errors="coerce")
-    d["Group"] = d.Stratification1.fillna("Overall")
-    return d.dropna(subset=["Year"])
+@st.cache_data(ttl=1800)
+def options():
+    r = requests.get(f"{API}/options", timeout=120); r.raise_for_status(); return r.json()
 
-d = load_data()
-st.subheader("1. Choose your filters")
-st.caption("Compare locations, demographic groups such as age or sex, or both. Choose one location to compare groups within it, or select multiple locations and groups.")
-questions = sorted(d.Question.dropna().unique())
-question = st.selectbox("Indicator / question", questions, index=questions.index("Depression among adults") if "Depression among adults" in questions else 0)
-metric_rows = d[d.Question == question]
-row1 = st.columns(3)
-metric = row1[0].selectbox("Measure", sorted(metric_rows.DataValueType.dropna().unique()))
-units = sorted(metric_rows.loc[metric_rows.DataValueType == metric, "DataValueUnit"].dropna().unique())
-unit = row1[1].selectbox("Unit", units) if len(units) > 1 else (units[0] if units else "")
-categories = sorted(metric_rows.StratificationCategory1.fillna("Overall").unique())
-category = row1[2].selectbox("Demographic factor", categories, index=categories.index("Overall") if "Overall" in categories else 0)
-group_rows = metric_rows[metric_rows.StratificationCategory1.fillna("Overall") == category]
-groups = sorted(group_rows.Stratification1.fillna("Overall").unique())
-row2 = st.columns(2)
-selected_groups = row2[0].multiselect("Groups to compare", groups, default=["Overall"] if "Overall" in groups else groups[:1])
-available_locations = sorted(d.LocationDesc.dropna().unique())
-defaults = [x for x in ["North Carolina", "United States"] if x in available_locations]
-locations = row2[1].multiselect("Locations to compare", available_locations, default=defaults)
-years = st.slider("Year range", int(d.Year.min()), int(d.Year.max()), (int(d.Year.min()), int(d.Year.max())))
+try:
+    o = options()
+except Exception as e:
+    st.error(f"Could not reach the Render data service ({type(e).__name__}). Please refresh in a moment.")
+    st.stop()
 
-f = d[(d.Question == question) & (d.DataValueType == metric) & (d.DataValueUnit == unit) &
-      (d.StratificationCategory1.fillna("Overall") == category) &
-      d.Stratification1.fillna("Overall").isin(selected_groups) & d.LocationDesc.isin(locations) & d.Year.between(*years)].dropna(subset=["Value"]).copy()
+st.subheader("1. Choose the question and values")
+q = st.selectbox("CDC question", o["questions"])
+units = [u for u, qs in o["questions_by_unit"].items() if q in qs]
+def_unit = "Number" if "average mentally unhealthy days" in q.lower() else "%"
+u = st.selectbox("Value unit", units, index=units.index(def_unit) if def_unit in units else 0)
+types = o["estimate_types"]
+def_type = "Crude Mean" if u == "Number" else "Crude Prevalence"
+t = st.selectbox("Estimate type", types, index=types.index(def_type) if def_type in types else 0)
+y0, y1 = min(o["years"]), max(o["years"])
+years = st.slider("Year range", y0, y1, (y0, y1))
 
-st.subheader("2. Comparison bar graph")
-if f.empty:
-    st.warning("No values match these filters. Choose at least one group and location, or adjust the indicator or year range.")
+st.subheader("2. Choose what to compare")
+cats = [c for c in o["demographic_categories"] if c != "Overall"]
+compare = st.selectbox("Compare by", ["Location", "Year"] + cats)
+allcats = o["demographic_categories"]
+defcat = "Overall" if "Overall" in allcats else allcats[0]
+locs, dcats, groups = [], [], []
+if compare == "Location":
+    defaults = [x for x in ["North Carolina", "United States"] if x in o["locations"]]
+    locs = st.multiselect("Locations", o["locations"], default=defaults)
+    c = st.selectbox("Population filter", allcats, index=allcats.index(defcat))
+    dcats = [c]; opts = o["groups_by_category"].get(c, [])
+    groups = st.multiselect("Population group", opts, default=["Overall"] if "Overall" in opts else opts[:1])
 else:
-    series = f.groupby(["Year", "LocationDesc", "Group"], as_index=False).agg(Value=("Value", "mean"), Records=("Value", "size"))
-    chart = px.bar(series, x="Year", y="Value", color="LocationDesc", pattern_shape="Group", barmode="group",
-                   text_auto=".1f", labels={"Value": unit, "Year": "Year"}, title=f"{question} - {category}")
-    chart.update_layout(legend_title_text="Location / group", hovermode="x unified")
-    st.plotly_chart(chart, use_container_width=True)
+    defaultloc = "North Carolina" if "North Carolina" in o["locations"] else o["locations"][0]
+    locs = [st.selectbox("Location", o["locations"], index=o["locations"].index(defaultloc))]
+    c = st.selectbox("Population filter", allcats, index=allcats.index(defcat)) if compare == "Year" else compare
+    dcats = [c]; opts = o["groups_by_category"].get(c, [])
+    groups = st.multiselect("Groups to compare", opts, default=["Overall"] if compare == "Year" and "Overall" in opts else opts)
 
-    st.subheader("3. AI agent summary")
-    st.caption("The smolagents workflow checks the filtered data and coverage before writing. Add an OPENAI_API_KEY in Streamlit app Secrets to enable its LLM; otherwise the app shows the same evidence as a data-only summary.")
-    missing = {f"{loc} / {grp}": sorted(set(range(years[0], years[1] + 1)) - set(series.loc[(series.LocationDesc == loc) & (series.Group == grp), "Year"].astype(int))) for loc in locations for grp in selected_groups}
-    trends = {}
-    for (loc, grp), q in series.groupby(["LocationDesc", "Group"]):
-        if len(q) >= 2:
-            trends[f"{loc} / {grp}"] = float(LinearRegression().fit(q[["Year"]], q.Value).coef_[0])
-    evidence = {"question": question, "measure": metric, "unit": unit, "factor": category, "groups": selected_groups,
-                "years": years, "locations": locations, "values": series.to_dict("records"),
-                "missing_years": missing, "linear_change_per_year": trends}
-    summary = None
-    if os.getenv("OPENAI_API_KEY"):
-        try:
-            from smolagents import CodeAgent, OpenAIServerModel, tool
-
-            @tool
-            def inspect_filtered_data() -> str:
-                """Return the selected CDC values, missing years, and descriptive trend estimates."""
-                return str(evidence)
-
-            agent = CodeAgent(tools=[inspect_filtered_data], model=OpenAIServerModel(model_id=os.getenv("MODEL_ID", "gpt-4o-mini")), max_steps=3, verbosity_level=0)
-            summary = agent.run("Call inspect_filtered_data. Write one factual sentence comparing the selected locations and groups. Mention observed data coverage and missing years where relevant. Do not infer causes, forecast, or give medical advice.")
-        except Exception as err:
-            st.info(f"The AI agent could not run ({type(err).__name__}); showing the data-only summary.")
-    if summary:
-        st.write(summary)
+if st.button("Generate graph and AI summary", type="primary"):
+    if not locs or not groups:
+        st.warning("Select at least one location and group.")
     else:
-        sentences = []
-        for (loc, grp), q in series.groupby(["LocationDesc", "Group"]):
-            q = q.sort_values("Year")
-            delta = q.Value.iloc[-1] - q.Value.iloc[0] if len(q) > 1 else 0
-            gaps = missing[f"{loc} / {grp}"]
-            sentences.append(f"{loc} / {grp}: {len(q)} observed year(s), {q.Value.iloc[0]:.1f} to {q.Value.iloc[-1]:.1f} ({delta:+.1f} from first to last); missing years: {gaps or 'none'}")
-        st.write(". ".join(sentences) + ". These reported values do not establish why they changed.")
-    st.dataframe(series, hide_index=True, use_container_width=True)
+        payload = dict(data_unit=u, question=q, start_year=years[0], end_year=years[1], locations=locs,
+                       demographic_categories=dcats, demographic_groups=groups, estimate_type=t)
+        try:
+            with st.spinner("The smolagents workflow is retrieving and checking CDC values…"):
+                r = requests.post(f"{API}/analyze", json=payload, timeout=180); r.raise_for_status(); answer = r.json()
+            d = pd.DataFrame(answer["analysis"]["summary_by_location_and_year"])
+            if d.empty:
+                st.warning("No CDC values match these filters. Try another year, group, or estimate.")
+            else:
+                d["Compare"] = d["YearStart"].astype(str) if compare == "Year" else d["LocationDesc"] if compare == "Location" else d["Stratification1"]
+                if compare in ("Location", "Year") and len(groups) > 1:
+                    d["Compare"] = d["Compare"].astype(str) + " · " + d["Stratification1"].astype(str)
+                d.rename(columns={"YearStart":"Year", "mean_value":"Value", "number_of_records":"Records"}, inplace=True)
+                st.subheader("3. Bar graph")
+                x = "Compare" if compare == "Year" else "Year"
+                color = None if compare == "Year" else "Compare"
+                fig = px.bar(d, x=x, y="Value", color=color, barmode="group", text_auto=".1f", hover_data=["Records"], title=f"{q} — compared by {compare}")
+                st.plotly_chart(fig, use_container_width=True)
+                st.subheader("4. AI agent summary")
+                st.write(answer.get("explanation", "The agent returned data without a text explanation."))
+                st.caption(answer.get("agent_log", "smolagents workflow completed"))
+                quality = answer.get("quality", {})
+                if quality.get("missing_years_by_location"): st.info(f"Missing-year coverage: {quality['missing_years_by_location']}")
+                slopes = {}
+                for name, g in d.groupby("Compare"):
+                    if g["Year"].nunique() > 1:
+                        slopes[str(name)] = LinearRegression().fit(g[["Year"]], g["Value"]).coef_[0]
+                if slopes: st.caption("Descriptive linear change per year (not a forecast): " + "; ".join(f"{k}: {v:+.2f}" for k,v in slopes.items()))
+                st.dataframe(d, hide_index=True, use_container_width=True)
+        except Exception as e:
+            st.error(f"The Render agent could not complete this comparison ({type(e).__name__}). Try again or adjust the filters.")
 
-with st.expander("How this works and limitations"):
-    st.write("The chart averages duplicate rows within each year, location, and group. The agent uses a data inspection tool and the selected values; a scikit-learn linear regression estimates a descriptive slope, not a forecast. CDC estimates may be missing, revised, or not comparable across years or populations. Missing values are never treated as zero.")
+with st.expander("How it works and limitations"):
+    st.write("Render runs the smolagents workflow with retrieval, coverage, and analysis tools. The summary is based on selected CDC records. Linear regression describes the historical slope; it is not a forecast. Missing values are not zero, and population indicators do not explain causes or provide medical advice.")
