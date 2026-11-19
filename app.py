@@ -55,7 +55,10 @@ years = st.slider("Year range", y0, y1, (y0, y1))
 
 st.subheader("2. Choose what to compare")
 cats = [c for c in o["demographic_categories"] if c != "Overall"]
-compare = st.selectbox("Compare by", ["Location", "Year"] + cats)
+compare_options = ["Location"] + cats
+if years[0] == years[1]:
+    compare_options.insert(1, "Year")
+compare = st.selectbox("Compare by", compare_options, help="Year is available only when the selected year range is a single year.")
 allcats = o["demographic_categories"]
 defcat = "Overall" if "Overall" in allcats else allcats[0]
 locs, dcats, groups = [], [], []
@@ -105,9 +108,8 @@ if st.button("Generate graph and AI summary", type="primary"):
                     if g["Year"].nunique() > 1:
                         slopes[str(name)] = LinearRegression().fit(g[["Year"]], g["Value"]).coef_[0]
                 if slopes: st.caption("Descriptive linear change per year (not a forecast): " + "; ".join(f"{k}: {v:+.2f}" for k,v in slopes.items()))
-                st.dataframe(d, hide_index=True, use_container_width=True)
         except Exception as e:
             st.error(f"The Render agent could not complete this comparison ({type(e).__name__}). Try again or adjust the filters.")
 
-with st.expander("How it works and limitations"):
+with st.expander("Limitations and methods"):
     st.write("Render runs the smolagents workflow with retrieval, coverage, and analysis tools. The summary is based on selected CDC records. Linear regression describes the historical slope; it is not a forecast. Missing values are not zero, and population indicators do not explain causes or provide medical advice.")
