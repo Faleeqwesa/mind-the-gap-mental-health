@@ -22,9 +22,8 @@ except Exception as e:
 
 st.subheader("1. Choose the question and values")
 q = st.selectbox("CDC question", o["questions"])
-units = [u for u, qs in o["questions_by_unit"].items() if q in qs]
-def_unit = "Number" if "average mentally unhealthy days" in q.lower() else "%"
-u = st.selectbox("Value unit", units, index=units.index(def_unit) if def_unit in units else 0)
+u = "Number" if "average mentally unhealthy days" in q.lower() else "%"
+st.caption(f"Unit is set automatically to {u} for this question.")
 types = o["estimate_types"]
 def_type = "Crude Mean" if u == "Number" else "Crude Prevalence"
 t = st.selectbox("Estimate type", types, index=types.index(def_type) if def_type in types else 0)
