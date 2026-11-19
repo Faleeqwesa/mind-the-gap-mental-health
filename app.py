@@ -24,6 +24,15 @@ st.subheader("1. Choose the question and values")
 q = st.selectbox("CDC question", o["questions"])
 u = "Number" if "average mentally unhealthy days" in q.lower() else "%"
 st.caption(f"Unit is set automatically to {u} for this question.")
+st.markdown("""<style>
+.stApp{background:radial-gradient(ellipse at 85% 10%,rgba(205,231,250,.55),transparent 32%),radial-gradient(ellipse at 10% 55%,rgba(225,240,252,.45),transparent 28%),linear-gradient(180deg,#f8fbff,#eef6fc);color:#17324d}
+[data-testid="stHeader"]{background:rgba(248,251,255,.88)}
+h1,h2,h3{color:#164e77}
+[data-testid="stWidgetLabel"] p{color:#24435d}
+div.stButton>button[kind="primary"]{background:#1769aa;border-color:#1769aa;color:white;border-radius:10px}
+div.stButton>button[kind="primary"]:hover{background:#0e548e;border-color:#0e548e}
+[data-testid="stDataFrame"]{border:1px solid #d4e5f2;border-radius:10px}
+</style>""",unsafe_allow_html=True)
 types = o["estimate_types"]
 def_type = "Crude Mean" if u == "Number" else "Crude Prevalence"
 t = st.selectbox("Estimate type", types, index=types.index(def_type) if def_type in types else 0)
@@ -69,7 +78,8 @@ if st.button("Generate graph and AI summary", type="primary"):
                 st.subheader("3. Bar graph")
                 x = "Compare" if compare == "Year" else "Year"
                 color = None if compare == "Year" else "Compare"
-                fig = px.bar(d, x=x, y="Value", color=color, barmode="group", text_auto=".1f", hover_data=["Records"], title=f"{q} — compared by {compare}")
+                fig = px.bar(d, x=x, y="Value", color=color, color_discrete_sequence=px.colors.sequential.Blues[2:], barmode="group", text_auto=".1f", hover_data=["Records"], title=f"{q} — compared by {compare}")
+                fig.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="#f7fbff", font_color="#17324d", xaxis_gridcolor="#e2edf5", yaxis_gridcolor="#dce9f3")
                 st.plotly_chart(fig, use_container_width=True)
                 st.subheader("4. AI agent summary")
                 st.write(answer.get("explanation", "The agent returned data without a text explanation."))
