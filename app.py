@@ -25,13 +25,17 @@ q = st.selectbox("CDC question", o["questions"])
 u = "Number" if "average mentally unhealthy days" in q.lower() else "%"
 st.caption(f"Unit is set automatically to {u} for this question.")
 st.markdown("""<style>
-.stApp{background:radial-gradient(ellipse at 85% 10%,rgba(205,231,250,.55),transparent 32%),radial-gradient(ellipse at 10% 55%,rgba(225,240,252,.45),transparent 28%),linear-gradient(180deg,#f8fbff,#eef6fc);color:#17324d}
-[data-testid="stHeader"]{background:rgba(248,251,255,.88)}
-h1,h2,h3{color:#164e77}
-[data-testid="stWidgetLabel"] p{color:#24435d}
-div.stButton>button[kind="primary"]{background:#1769aa;border-color:#1769aa;color:white;border-radius:10px}
-div.stButton>button[kind="primary"]:hover{background:#0e548e;border-color:#0e548e}
-[data-testid="stDataFrame"]{border:1px solid #d4e5f2;border-radius:10px}
+.stApp{background:radial-gradient(ellipse at 82% 10%,rgba(28,65,96,.22),transparent 34%),#080d13;color:#d9e6f1}
+[data-testid="stHeader"]{background:rgba(8,13,19,.94)}
+h1,h2,h3{color:#91b9dc}
+p,label,[data-testid="stWidgetLabel"] p{color:#d3e1ec}
+div[data-baseweb="select"]>div,div[data-baseweb="input"]>div{background:#111d29;border-color:#36516a;color:#e4eef6}
+[data-baseweb="tag"]{background:#254b6b!important;color:#e5f1fa!important}
+[data-baseweb="slider"] [role="slider"]{background:#78acd4!important;border:2px solid #c8e1f5!important;box-shadow:none!important}
+[data-baseweb="slider"] [data-testid="stTickBar"]{background:#345c7b!important}
+div.stButton>button[kind="primary"]{background:#285f8a;border-color:#4c82ad;color:#f1f7fb;border-radius:9px}
+div.stButton>button[kind="primary"]:hover{background:#346f9c;border-color:#6996ba}
+[data-testid="stDataFrame"]{border:1px solid #263c50;border-radius:9px}
 </style>""",unsafe_allow_html=True)
 types = o["estimate_types"]
 def_type = "Crude Mean" if u == "Number" else "Crude Prevalence"
@@ -79,7 +83,7 @@ if st.button("Generate graph and AI summary", type="primary"):
                 x = "Compare" if compare == "Year" else "Year"
                 color = None if compare == "Year" else "Compare"
                 fig = px.bar(d, x=x, y="Value", color=color, color_discrete_sequence=px.colors.sequential.Blues[2:], barmode="group", text_auto=".1f", hover_data=["Records"], title=f"{q} — compared by {compare}")
-                fig.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="#f7fbff", font_color="#17324d", xaxis_gridcolor="#e2edf5", yaxis_gridcolor="#dce9f3")
+                fig.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="#0b121a", font_color="#d9e6f1", xaxis_gridcolor="#24384a", yaxis_gridcolor="#24384a")
                 st.plotly_chart(fig, use_container_width=True)
                 st.subheader("4. AI agent summary")
                 st.write(answer.get("explanation", "The agent returned data without a text explanation."))
