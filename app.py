@@ -143,7 +143,49 @@ def score_benchmark_summary(filters, result, summary):
     direction_terms = {"up": ("up", "increas", "rose", "higher"), "down": ("down", "decreas", "fell", "lower"), "unchanged": ("unchanged", "stable", "flat")}
     checks.append(bool(series) and all(any(term in text for term in direction_terms[direction]) for direction in expected[-1].values()) and not any(term in text for term in ("caused by", "causes", "because of", "leads to")))
 
-    return [{**case, "expected": expected[i], "agent_summary": str(summary or ""), "pass": bool(checks[i]), "baseline_pass": i < 9} for i, case in enumerate(questions)]
+    scoring_rules = [
+        "The exact selected CDC question must appear in the summary.",
+        "The selected unit must be explicit: percent (%) for percentage measures, or days for the days measure.",
+        "The exact selected estimate type must appear.",
+        "Both selected boundary years must appear.",
+        "Every selected location name must appear.",
+        "Every selected demographic category must appear.",
+        "Every selected demographic group must appear.",
+        "The summary must identify the selected year range as a time period.",
+        "The exact matching-record count and a record/row/observation label must appear.",
+        "The exact numeric-record count and a numeric/valid-record label must appear.",
+        "The missing-record count must be reported; when zero, an explicit no-missing statement is required.",
+        "Observed coverage years from the structured API evidence must be reported with coverage context.",
+        "Every expected missing year must be identified; if none are expected, the summary must explicitly report no gaps.",
+        "Shared years must be named with shared/common/across context; if none, that absence must be explicit.",
+        "The exact number of returned series must appear with a series/group/population label.",
+        "For every series, its first observed year and corresponding mean must appear.",
+        "For every series, its latest observed year and corresponding mean must appear.",
+        "For every series, its peak mean and peak year(s) must appear.",
+        "Every series' first-to-last direction must be represented, and causal wording must be absent.",
+    ]
+    answer = str(summary or "")
+    rows_out = []
+    for i, case in enumerate(questions):
+        passed = bool(checks[i])
+        expected_text = json.dumps(expected[i], ensure_ascii=False, sort_keys=True, default=str)
+        reason = (
+            f"Pass: the deterministic check found the required evidence. Rule: {scoring_rules[i]} "
+            f"Expected: {expected_text}"
+            if passed else
+            f"Fail: the required evidence was not detected. Rule: {scoring_rules[i]} "
+            f"Expected: {expected_text}"
+        )
+        rows_out.append({
+            **case,
+            "expected_answer": expected[i],
+            "agent_answer": answer,
+            "scoring_rule": scoring_rules[i],
+            "why": reason,
+            "pass": passed,
+            "baseline_pass": i < 9,
+        })
+    return rows_out
 st.set_page_config(page_title="Mind the Gap", page_icon="🧠", layout="wide")
 st.title("Mind the Gap")
 st.caption("Explore CDC mental health indicators. Select filters, choose what to compare, then view the graph and agent summary.")
@@ -217,8 +259,8 @@ st.subheader("Benchmark the AI summary")
 run_summary_benchmark = st.checkbox("Score the existing AI summary with 20 filter-based questions", value=True,
                                     help="Scoring reuses the response from the existing Generate button. It makes no extra API call.")
 with st.expander("Benchmark cases, scoring, and baseline"):
-    st.write("The 20 evaluator questions use the selections above and check whether the existing AI summary mentions the selected measure, filters, record counts, year coverage, annual values, and trend direction. The current API accepts filter values, not free-form benchmark prompts, so these questions score the returned summary rather than being sent to the agent individually. Scoring uses deterministic text and number checks against the structured facts in that same API response; phrasing differences can produce false negatives. No LLM judge is used.")
-    st.write("The filters-only baseline can answer B01–B09 from the submitted controls (9/20). It has no CDC retrieval for B10–B20. The benchmark makes no additional API call; it runs locally after the existing graph-and-summary request. It evaluates summary coverage, not full clinical usefulness or safety.")
+    st.write("The 20 evaluator questions are generated from the selections above. They score the returned summary; they are not 20 prompts sent to the agent because the existing API accepts filters only. For each check, the table shows the question, the full answer, expected evidence from the selected filters or structured API response, the rule, and why it passed or failed. Exact values and all selected names are required where relevant; keyword matches alone are not the scoring policy. The checks are still a deterministic coverage proxy: they can miss paraphrases and contradictions, and API-provided expected evidence is not an independent validation of the CDC source. No LLM judge is used.")
+    st.write("The filters-only baseline knows only the submitted controls: B01–B09 are directly answerable and B10–B20 are scored as not answerable without CDC retrieval (9/20). The benchmark reuses the existing graph-and-summary response and makes no additional API call. It does not establish clinical usefulness, safety, or complete factual accuracy.")
 benchmark_filters = dict(data_unit=u, question=q, start_year=years[0], end_year=years[1], locations=locs,
                          demographic_categories=dcats, demographic_groups=groups, estimate_type=t)
 
@@ -266,7 +308,7 @@ if st.button("Generate graph and AI summary", type="primary"):
                     metric_a.metric("Summary checks passed", f"{agent_passes}/20", f"{agent_passes / 20:.0%}")
                     metric_b.metric("Filters-only baseline", f"{baseline_passes}/20", f"{baseline_passes / 20:.0%}")
                     metric_c.metric("Existing API request", f"{benchmark_latency:.2f}s")
-                    st.dataframe(pd.DataFrame(case_rows)[["id", "question", "expected", "pass"]], use_container_width=True, hide_index=True)
+                    st.dataframe(pd.DataFrame(case_rows)[["id", "question", "pass", "agent_answer", "expected_answer", "scoring_rule", "why"]], use_container_width=True, hide_index=True)
                     st.download_button("Download benchmark results (CSV)", pd.DataFrame(case_rows).to_csv(index=False),
                                        file_name="mind-the-gap-filter-benchmark.csv", mime="text/csv")
                     st.download_button("Download reproducible benchmark (JSON)", json.dumps({
