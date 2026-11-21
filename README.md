@@ -21,6 +21,6 @@ The app calls the Render API at `https://cdc-mental-health-agent-api.onrender.co
 
 ## Methods and evaluation
 
-The app groups duplicate source rows by year, location, and selected group; reports missing years without filling them as zero; and fits a scikit-learn linear regression slope as a descriptive trend. `benchmark.py` reproduces 20 exact-value and missing-year cases against a simple overall-only baseline. Current results are 20/20 pipeline matches and 7/20 baseline matches. This evaluates retrieval/coverage calculations, not LLM response quality.
+The app groups duplicate source rows by year, location, and selected group; reports missing years without filling them as zero; and fits a scikit-learn linear regression slope as a descriptive trend. The existing Generate action can score its returned AI summary against 20 filter-based checks, using the same API response and making no extra request. The score is a deterministic text/number coverage measure, not an LLM judge or a full factuality assessment. `benchmark_questions.json` documents the checks; CSV and JSON results can be downloaded from the app. `benchmark.py` remains a separate deterministic calculation check over the included CDC snapshot; its 20/20 pipeline and 7/20 baseline results are not AI-agent summary scores. See `BENCHMARK.md` for both protocols and their limits.
 
 The project site explains the audience, product purpose, workflow, source, benchmark, and limitations. Add a walkthrough recording there to complete that portfolio element. See `BENCHMARK.md` for the benchmark scope.
