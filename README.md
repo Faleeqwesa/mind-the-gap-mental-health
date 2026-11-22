@@ -4,7 +4,7 @@ Live app: https://mind-the-gap-mental-health.streamlit.app/
 Project site: https://faleeqwesa.github.io/mind-the-gap-mental-health/  
 Source: https://github.com/Faleeqwesa/mind-the-gap-mental-health
 
-Use the controls in the app to select a CDC mental health question, demographic factor and groups, locations, and year range. Year appears in Compare by only when you select a single year. The bar graph follows the filters, then the AI summary. The portfolio embeds the explorer on the same page.
+Mind the Gap helps public-health and healthcare audiences compare CDC mental-health indicators by question, year, location, and demographic group. Choose filters, compare the bar graph and AI explanation, then review year coverage and historical trends. The portfolio embeds the app on the same page.
 
 ## Run locally
 
@@ -13,14 +13,16 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-The supplied `mental_health_cdi.csv` is the Mental Health topic subset from `U.S._Chronic_Disease_Indicators_20260930.csv`. Rebuild the extract with `python data/extract.py path/to/full_CDC_file.csv` in the source package.
+The included `mental_health_cdi.csv` is the Mental Health topic subset from the U.S. Chronic Disease Indicators snapshot dated 2026-09-30.
 
 ## AI agent
 
-The app calls the Render API at `https://cdc-mental-health-agent-api.onrender.com`. Its `/analyze` workflow uses smolagents with CDC retrieval, coverage checks, and analysis tools. The LLM key stays in Render’s private environment; the Streamlit app does not need an OpenAI key in its Secrets.
+The app calls the existing Render API at `https://cdc-mental-health-agent-api.onrender.com/analyze`. Its smolagents workflow retrieves CDC records, checks coverage, and analyzes the selected data. The key remains in Render; the Streamlit app does not require it.
 
 ## Methods and evaluation
 
-The app groups duplicate source rows by year, location, and selected group; reports missing years without filling them as zero; and fits a scikit-learn linear regression slope as a descriptive trend. The existing Generate action can score its returned AI summary against 20 filter-based checks, using the same API response and making no extra request. The score is a deterministic text/number coverage measure, not an LLM judge or a full factuality assessment. `benchmark_questions.json` documents the checks; CSV and JSON results can be downloaded from the app. `benchmark.py` remains a separate deterministic calculation check over the included CDC snapshot; its 20/20 pipeline and 7/20 baseline results are not AI-agent summary scores. See `BENCHMARK.md` for both protocols and their limits.
+The app groups duplicate records by year, location, and comparison group, reports missing years without treating them as zero, and fits a separate scikit-learn linear regression for each group. Year is the input and annual mean value is the outcome; the slope describes historical change, not a forecast.
 
-The project site explains the audience, product purpose, workflow, source, benchmark, and limitations. Add a walkthrough recording there to complete that portfolio element. See `BENCHMARK.md` for the benchmark scope.
+The official Part 5 evaluation is a reproducible 20-scenario test of the existing agent. Run `python agent_benchmark.py --dry-run`, then `python agent_benchmark.py` to collect results. See [BENCHMARK.md](BENCHMARK.md) for scoring and limitations. The optional Streamlit checkbox checks one generated summary against 20 criteria; it is not the official benchmark.
+
+Human semantic review of benchmark summaries remains pending. The project walkthrough video still needs to be recorded and added to the portfolio.
