@@ -212,18 +212,27 @@ def estimate_options(question, unit):
     return sorted(rows["DataValueType"].dropna().unique())
 st.markdown("""<style>
 :root{--primary-color:#4b83af}
-.stApp,[data-testid="stAppViewContainer"]{background:radial-gradient(ellipse at 82% 10%,rgba(28,65,96,.22),transparent 34%),#080d13;color:#d9e6f1}
-[data-testid="stHeader"]{background:rgba(8,13,19,.94)}
-h1,h2,h3{color:#91b9dc}
-p,label,[data-testid="stWidgetLabel"] p{color:#d3e1ec}
-div[data-baseweb="select"]>div,div[data-baseweb="input"]>div{background:#111d29!important;border-color:#36516a!important;color:#e4eef6!important}
-[data-baseweb="tag"],[data-baseweb="tag"]>span{background:#254b6b!important;color:#e5f1fa!important}
+.stApp,[data-testid="stAppViewContainer"]{background:radial-gradient(ellipse at 78% 0%,rgba(45,99,141,.20),transparent 38%),#0a1119;color:#e1ebf3}
+[data-testid="stHeader"]{background:rgba(10,17,25,.96)}
+.block-container{max-width:1200px;padding-top:2.1rem;padding-bottom:3rem}
+h1,h2,h3{color:#a9cbea;letter-spacing:-.02em}
+h1{font-size:2.7rem!important}h2{font-size:1.7rem!important}
+p,label,[data-testid="stWidgetLabel"] p{color:#d6e3ee;line-height:1.55}
+[data-testid="stCaptionContainer"] p{color:#9eb4c6}
+div[data-baseweb="select"]>div,div[data-baseweb="input"]>div{background:#111e2b!important;border-color:#35536c!important;color:#e4eef6!important;border-radius:9px}
+[data-baseweb="tag"],[data-baseweb="tag"]>span{background:#254b6b!important;color:#e5f1fa!important;border-radius:7px}
 [data-baseweb="tag"] svg{fill:#cfe4f5!important}
-[data-baseweb="slider"] [role="slider"]{background:#78acd4!important;border:2px solid #c8e1f5!important;box-shadow:none!important}
+[data-baseweb="slider"] [role="slider"]{background:#78acd4!important;border:2px solid #d2e6f4!important;box-shadow:0 0 0 3px #254b6b!important}
 [data-baseweb="slider"] [data-testid="stTickBar"]{background:#345c7b!important}
-button[kind="primary"],button[data-testid="baseButton-primary"]{background:#285f8a!important;border-color:#4c82ad!important;color:#f1f7fb!important;border-radius:9px}
-button[kind="primary"]:hover,button[data-testid="baseButton-primary"]:hover{background:#346f9c!important;border-color:#6996ba!important}
-[data-testid="stDataFrame"]{border:1px solid #263c50;border-radius:9px}
+button[kind="primary"],button[data-testid="baseButton-primary"]{background:linear-gradient(120deg,#285f8a,#377ca9)!important;border:1px solid #6091b6!important;color:#f1f7fb!important;border-radius:10px;padding:.55rem 1rem;transition:background .15s ease}
+button[kind="primary"]:hover,button[data-testid="baseButton-primary"]:hover{background:#4287b4!important;border-color:#8ab5d5!important}
+div[data-testid="stVerticalBlockBorderWrapper"]{border-color:#29465d!important;border-radius:14px!important;background:linear-gradient(135deg,rgba(30,58,79,.72),rgba(15,27,39,.86))}
+[data-testid="stMetric"]{background:#112131;border:1px solid #29465d;border-radius:12px;padding:14px}
+[data-testid="stMetricLabel"] p{color:#b8cde0!important}[data-testid="stMetricValue"]{color:#d8ebfa!important}
+[data-testid="stDataFrame"]{border:1px solid #29465d;border-radius:10px}
+[data-testid="stExpander"]{border:1px solid #29465d!important;border-radius:10px!important;background:#101b27}
+:focus-visible{outline:3px solid #8ac2e8!important;outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
 </style>""",unsafe_allow_html=True)
 types = estimate_options(q, u)
 if not types:
@@ -256,12 +265,14 @@ else:
     dcats = [c]; opts = o["groups_by_category"].get(c, [])
     groups = st.multiselect("Groups to compare", opts, default=["Overall"] if compare == "Year" and "Overall" in opts else opts)
 
-st.subheader("Benchmark the AI summary")
-run_summary_benchmark = st.checkbox("Score the existing AI summary with 20 filter-based questions", value=True,
-                                    help="Scoring reuses the response from the existing Generate button. It makes no extra API call.")
-with st.expander("Benchmark cases, scoring, and baseline"):
-    st.write("The 20 evaluator questions are generated from the selections above. They score the returned summary; they are not 20 prompts sent to the agent because the existing API accepts filters only. For each check, the table shows the question, the full answer, expected evidence from the selected filters or structured API response, the rule, and why it passed or failed. Exact values and all selected names are required where relevant; keyword matches alone are not the scoring policy. The checks are still a deterministic coverage proxy: they can miss paraphrases and contradictions, and API-provided expected evidence is not an independent validation of the CDC source. No LLM judge is used.")
-    st.write("The filters-only baseline knows only the submitted controls: B01–B09 are directly answerable and B10–B20 are scored as not answerable without CDC retrieval (9/20). The benchmark reuses the existing graph-and-summary response and makes no additional API call. It does not establish clinical usefulness, safety, or complete factual accuracy.")
+st.subheader("Optional AI-summary evaluation")
+run_summary_benchmark = st.checkbox("Score the existing AI summary with 20 filter-based questions", value=False,
+                                    help="Select this before generating results to show the evaluation.")
+with st.expander("What the evaluation checks"):
+    st.write("The 20 checks are built from your selected filters and assess the returned summary: question, unit, population, years, record counts, missing data, annual values, and trends. They are checks on one answer—not 20 prompts sent to the agent.")
+    st.write("The filters-only baseline is 9/20 because it knows your selections but has no retrieved CDC data. Scoring reuses the graph-and-summary API response, with no extra API call. It is a deterministic coverage check, not an independent CDC data verification; no LLM judge is used.")
+with st.expander("Evaluation details"):
+    st.caption("Each check compares the summary with selected filters or evidence in the same API response. Exact names, values, and context are required where specified. Text matching can miss paraphrases or contradictions and does not establish usefulness or clinical safety.")
 benchmark_filters = dict(data_unit=u, question=q, start_year=years[0], end_year=years[1], locations=locs,
                          demographic_categories=dcats, demographic_groups=groups, estimate_type=t)
 
@@ -284,42 +295,86 @@ if st.button("Generate graph and AI summary", type="primary"):
                 if compare in ("Location", "Year") and len(groups) > 1:
                     d["Compare"] = d["Compare"].astype(str) + " · " + d["Stratification1"].astype(str)
                 d.rename(columns={"YearStart":"Year", "mean_value":"Value", "number_of_records":"Records"}, inplace=True)
-                st.subheader("3. Bar graph")
+                st.markdown("### 1. Results graph")
                 x = "Compare" if compare == "Year" else "Year"
                 color = None if compare == "Year" else "Compare"
-                fig = px.bar(d, x=x, y="Value", color=color, color_discrete_sequence=px.colors.sequential.Blues[2:], barmode="group", text_auto=".1f", hover_data=["Records"], title=f"{q} — compared by {compare}")
-                fig.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="#0b121a", font_color="#d9e6f1", xaxis_gridcolor="#24384a", yaxis_gridcolor="#24384a")
+                fig = px.bar(
+                    d, x=x, y="Value", color=color,
+                    color_discrete_sequence=px.colors.sequential.Blues[2:],
+                    barmode="group", text_auto=".1f", hover_data=["Records"],
+                    title=f"{q} — compared by {compare}"
+                )
+                fig.update_layout(
+                    paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="#0b121a",
+                    font_color="#d9e6f1", xaxis_gridcolor="#24384a",
+                    yaxis_gridcolor="#24384a", title_font_size=18,
+                    legend_title_text="Comparison group", margin=dict(l=16,r=16,t=58,b=20)
+                )
+                fig.update_yaxes(title_text="Days" if u == "Number" else "Percent (%)", rangemode="tozero")
+                fig.update_xaxes(title_text="Year" if compare != "Year" else "Selected year")
                 st.plotly_chart(fig, use_container_width=True)
-                st.subheader("4. AI agent summary")
-                st.write(answer.get("explanation", "The agent returned data without a text explanation."))
-                st.caption(answer.get("agent_log", "smolagents workflow completed"))
+                with st.container(border=True):
+                    st.markdown("### 2. AI-generated summary")
+                    st.markdown(answer.get("explanation", "The agent returned data without a text explanation."))
+
+                st.markdown("### 3. Data coverage")
                 quality = answer.get("quality", {})
-                if quality.get("missing_years_by_location"): st.info(f"Missing-year coverage: {quality['missing_years_by_location']}")
+                missing_by_location = quality.get("missing_years_by_location", {})
+                observed_by_location = quality.get("years_by_location", {})
+                if missing_by_location:
+                    coverage_columns = st.columns(min(3, len(missing_by_location)))
+                    for i, location in enumerate(missing_by_location):
+                        with coverage_columns[i % len(coverage_columns)]:
+                            with st.container(border=True):
+                                st.markdown(f"**{location}**")
+                                missing_years = sorted(missing_by_location.get(location) or [])
+                                if missing_years:
+                                    st.warning("Missing years: " + ", ".join(map(str, missing_years)))
+                                else:
+                                    st.success("No missing years in the selected period.")
+                                observed_years = sorted(observed_by_location.get(location) or [])
+                                if observed_years:
+                                    st.caption("Years with records: " + ", ".join(map(str, observed_years)))
+                else:
+                    st.info("The service did not return year-coverage details for this selection.")
+
+                st.markdown("### 4. Linear trend analysis")
+                st.caption("Linear regression describes the fitted change across observed years. A positive slope points upward; a negative slope points downward. This is a descriptive trend, not a prediction.")
                 slopes = {}
-                for name, g in d.groupby("Compare"):
-                    if g["Year"].nunique() > 1:
-                        slopes[str(name)] = LinearRegression().fit(g[["Year"]], g["Value"]).coef_[0]
-                if slopes: st.caption("Descriptive linear change per year (not a forecast): " + "; ".join(f"{k}: {v:+.2f}" for k,v in slopes.items()))
+                for name, group in d.groupby("Compare"):
+                    if group["Year"].nunique() > 1:
+                        slopes[str(name)] = LinearRegression().fit(group[["Year"]], group["Value"]).coef_[0]
+                if slopes:
+                    slope_columns = st.columns(min(3, len(slopes)))
+                    slope_unit = "days per year" if u == "Number" else "percentage points per year"
+                    for i, (name, slope) in enumerate(slopes.items()):
+                        with slope_columns[i % len(slope_columns)]:
+                            with st.container(border=True):
+                                st.markdown(f"**{name}**")
+                                st.metric("Fitted slope", f"{slope:+.2f} {slope_unit}",
+                                          "Upward" if slope > 0.005 else "Downward" if slope < -0.005 else "Nearly flat")
+                else:
+                    st.info("A linear trend needs observed values from more than one year.")
+
                 if run_summary_benchmark:
                     case_rows = score_benchmark_summary(benchmark_filters, answer, answer.get("explanation", ""))
                     agent_passes = sum(row["pass"] for row in case_rows)
                     baseline_passes = sum(row["baseline_pass"] for row in case_rows)
-                    st.subheader("20-question benchmark results")
+                    st.markdown("### 5. AI-summary benchmark")
+                    st.caption("These checks evaluate the summary shown above and reuse this request.")
                     metric_a, metric_b, metric_c = st.columns(3)
                     metric_a.metric("Summary checks passed", f"{agent_passes}/20", f"{agent_passes / 20:.0%}")
                     metric_b.metric("Filters-only baseline", f"{baseline_passes}/20", f"{baseline_passes / 20:.0%}")
-                    metric_c.metric("Existing API request", f"{benchmark_latency:.2f}s")
-                    st.dataframe(pd.DataFrame(case_rows)[["id", "question", "pass", "agent_answer", "expected_answer", "scoring_rule", "why"]], use_container_width=True, hide_index=True)
-                    st.download_button("Download benchmark results (CSV)", pd.DataFrame(case_rows).to_csv(index=False),
-                                       file_name="mind-the-gap-filter-benchmark.csv", mime="text/csv")
-                    st.download_button("Download reproducible benchmark (JSON)", json.dumps({
-                        "filters": benchmark_filters, "api_latency_seconds": benchmark_latency,
-                        "summary_coverage_passes": agent_passes, "filters_only_baseline_passes": baseline_passes,
-                        "scoring_note": "Deterministic text checks against the same API response; not a separate LLM judge.",
-                        "cases": case_rows,
-                    }, indent=2, default=str), file_name="mind-the-gap-filter-benchmark.json", mime="application/json")
+                    metric_c.metric("API response time", f"{benchmark_latency:.2f}s")
+                    with st.expander("Review all 20 evaluation checks"):
+                        st.dataframe(
+                            pd.DataFrame(case_rows)[["id", "question", "pass", "agent_answer", "expected_answer", "scoring_rule", "why"]],
+                            use_container_width=True, hide_index=True
+                        )
         except Exception as e:
-            st.error(f"The Render agent could not complete this comparison ({type(e).__name__}). Try again or adjust the filters.")
+            st.error("This comparison could not be completed. Try again or adjust the selected filters.")
+            with st.expander("Technical details"):
+                st.caption(type(e).__name__)
 
 with st.expander("Limitations and methods"):
     st.write("Render runs the smolagents workflow with retrieval, coverage, and analysis tools. The summary is based on selected CDC records. Linear regression describes the historical slope; it is not a forecast. Missing values are not zero, and population indicators do not explain causes or provide medical advice.")
