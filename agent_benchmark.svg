@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="360" viewBox="0 0 760 360" role="img" aria-labelledby="title desc">
+<title id="title">AI-agent benchmark results</title>
+<desc id="desc">Request, usable response, structured snapshot match, summary coverage, and filters-only baseline metrics.</desc>
+<rect width="100%" height="100%" fill="#f2f7fb"/>
+<text x="30" y="30" font-family="Arial,sans-serif" font-size="19" font-weight="700" fill="#102b42">20-case AI-agent benchmark</text>
+<text x="22" y="80" font-family="Arial,sans-serif" font-size="13" fill="#17354e">Request success</text>
+<rect x="180" y="62" width="520" height="22" rx="8" fill="#dce9f1"/>
+<rect x="180" y="62" width="520" height="22" rx="8" fill="#2e6f9f"/>
+<text x="712" y="79" font-family="Arial,sans-serif" font-size="13" fill="#17354e">18/18</text>
+<text x="22" y="138" font-family="Arial,sans-serif" font-size="13" fill="#17354e">Usable responses</text>
+<rect x="180" y="120" width="520" height="22" rx="8" fill="#dce9f1"/>
+<rect x="180" y="120" width="520" height="22" rx="8" fill="#397fab"/>
+<text x="712" y="137" font-family="Arial,sans-serif" font-size="13" fill="#17354e">18/18</text>
+<text x="22" y="196" font-family="Arial,sans-serif" font-size="13" fill="#17354e">Snapshot match</text>
+<rect x="180" y="178" width="520" height="22" rx="8" fill="#dce9f1"/>
+<rect x="180" y="178" width="520" height="22" rx="8" fill="#568eb3"/>
+<text x="712" y="195" font-family="Arial,sans-serif" font-size="13" fill="#17354e">18/18</text>
+<text x="22" y="254" font-family="Arial,sans-serif" font-size="13" fill="#17354e">Summary evidence</text>
+<rect x="180" y="236" width="520" height="22" rx="8" fill="#dce9f1"/>
+<rect x="180" y="236" width="412" height="22" rx="8" fill="#70a6c9"/>
+<text x="712" y="253" font-family="Arial,sans-serif" font-size="13" fill="#17354e">285/360</text>
+<text x="22" y="312" font-family="Arial,sans-serif" font-size="13" fill="#17354e">Filters-only baseline</text>
+<rect x="180" y="294" width="520" height="22" rx="8" fill="#dce9f1"/>
+<rect x="180" y="294" width="234" height="22" rx="8" fill="#9aafc0"/>
+<text x="712" y="311" font-family="Arial,sans-serif" font-size="13" fill="#17354e">162/360</text>
+</svg>
