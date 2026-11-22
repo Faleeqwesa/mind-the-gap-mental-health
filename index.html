@@ -114,7 +114,7 @@ footer p{margin:7px 0}
 <div class="step"><b>4 · Review results</b><span>The app shows a bar graph, regression slope, and LLM explanation.</span></div>
 </div>
 <div class="grid">
-<div class="card"><h3>Agent + language model</h3><p>The smolagents workflow calls the implemented retrieval, data-quality, and analysis tools. The LLM explains the structured results in plain language. It is instructed not to invent values, treat missing data as zero, make causal claims, diagnose, or recommend treatment.</p></div>
+<div class="card"><h3>Agent + language model</h3><p>The smolagents workflow calls the implemented retrieval, data-quality, and analysis tools. The LLM explains the structured results in plain language. It is instructed not to invent values, treat missing data as zero, make causal claims, diagnose, or recommend treatment. If no rows match, the app asks the user to broaden the filters; if the service fails, it shows an error and retry guidance.</p></div>
 <div class="card"><h3>Traditional ML: linear regression</h3><p>For each plotted comparison group, scikit-learn fits <em>annual mean value</em> against <em>year</em> using the selected observed points. The slope reports the fitted change per year—in percentage points for percentage measures or days for the unhealthy-days measure. Positive and negative values describe an upward or downward historical trend; they are not forecasts.</p></div>
 <div class="card"><h3>Two interaction decisions</h3><p>The app sets the unit from the selected question so percentage and days measures are not mixed. It also keeps “Compare by year” available only for a one-year selection, while allowing place or demographic comparisons over a range.</p></div>
 </div>
