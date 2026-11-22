@@ -3,151 +3,182 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Mind the Gap: an interactive CDC mental health indicator explorer and final project portfolio.">
-<title>Mind the Gap | CDC Mental Health Explorer</title>
+<meta name="description" content="Mind the Gap is an interactive explorer for CDC population-level mental health indicators.">
+<title>Mind the Gap | Mental Health Indicator Explorer</title>
 <style>
-:root{--ink:#16324a;--muted:#4c6478;--blue:#28618a;--blue-2:#dbeaf5;--line:#c8d9e6;--paper:#f2f7fb;--white:#fff;--navy:#102b42;--green:#386b61}
+:root{--navy:#102b42;--ink:#17354e;--blue:#2e6f9f;--sky:#e4f0f8;--muted:#526b7e;--line:#c6d8e5;--paper:#f2f7fb;--white:#fff;--deep:#0b1723}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:18px}
 body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif}
-a{color:#185d8b;text-underline-offset:3px}
-a:focus-visible,summary:focus-visible{outline:3px solid #236d9d;outline-offset:3px}
-header{background:linear-gradient(145deg,#102b42,#245a81);color:#f5f9fc;padding:30px max(24px,calc((100vw - 1060px)/2)) 58px}
-nav{display:flex;gap:9px;flex-wrap:wrap;margin:8px 0 52px}
-nav a{color:#f5f9fc;text-decoration:none;border:1px solid #9bbbd2;border-radius:999px;padding:6px 13px;font-size:14px}
-nav a:hover{background:#ffffff20}
-main,footer{max-width:1060px;margin:auto;padding:24px}
-.hero-kicker,.kicker{text-transform:uppercase;letter-spacing:.11em;font-weight:750;font-size:13px}
-.hero-kicker{color:#c8e1f2}
-h1{font:clamp(44px,8vw,76px)/1 Georgia,serif;letter-spacing:-.04em;margin:12px 0 16px}
-h2{font:clamp(28px,4vw,38px)/1.15 Georgia,serif;margin:0 0 12px}
+a{color:#165e91;text-underline-offset:3px}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid #317eae;outline-offset:3px}
+header{background:radial-gradient(ellipse at 82% 0%,#347bad55,transparent 42%),linear-gradient(135deg,#0c263b,#1d4e73);color:#f5f9fc;padding:22px max(22px,calc((100vw - 1120px)/2)) 62px}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin:5px 0 45px}
+nav a{color:#eff7fc;text-decoration:none;border:1px solid #93b6ce;border-radius:999px;padding:6px 12px;font-size:14px}
+nav a:hover{background:#ffffff18}
+.hero{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(220px,.7fr);align-items:end;gap:34px;max-width:1120px;margin:auto}
+.kicker{text-transform:uppercase;letter-spacing:.12em;font-size:12px;font-weight:800}
+.hero .kicker{color:#c7dfef}
+h1{font:clamp(48px,8vw,78px)/.98 Georgia,serif;letter-spacing:-.04em;margin:13px 0}
+h2{font:clamp(29px,4.5vw,39px)/1.12 Georgia,serif;letter-spacing:-.02em;margin:0 0 12px}
 h3{font-size:19px;line-height:1.3;margin:0 0 8px}
-.hero-lead{max-width:740px;font-size:21px;color:#e5f0f7}
-.hero-note{color:#cee0ed;max-width:790px}
-.button{display:inline-block;background:#fff;color:#16324a;text-decoration:none;font-weight:750;border-radius:7px;padding:11px 17px;margin:14px 9px 0 0}
+.lead{font-size:21px;color:#e4eff7;max-width:730px}
+.hero-copy>p:last-of-type{max-width:740px;color:#c9dce9}
+.hero-card{background:#ffffff10;border:1px solid #a7c5d955;border-radius:16px;padding:22px;box-shadow:0 16px 40px #06182733}
+.hero-card strong{display:block;color:#fff;font-size:36px;line-height:1.1}
+.hero-card span{color:#d5e5f0;font-size:14px}
+.button{display:inline-block;background:#f7fbfe;color:#17354e;text-decoration:none;font-weight:750;border-radius:9px;padding:11px 17px;margin:14px 9px 0 0}
 .button.secondary{background:transparent;color:#fff;border:1px solid #a9c6dc}
-section{background:var(--white);border:1px solid var(--line);border-radius:13px;padding:clamp(22px,4vw,34px);margin:20px 0;scroll-margin-top:16px}
-.kicker{color:var(--blue);margin-bottom:6px}
-.muted,.small{color:var(--muted)}
-.small{font-size:14px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr));gap:14px}
-.card{border:1px solid var(--line);border-radius:10px;padding:18px;background:#fbfdff}
+main,footer{max-width:1120px;margin:auto;padding:22px}
+section{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:clamp(23px,4vw,38px);margin:20px 0;box-shadow:0 8px 24px #1d48620b;scroll-margin-top:18px}
+.section-kicker{color:var(--blue);margin:0 0 6px}
+.intro{max-width:820px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,235px),1fr));gap:14px;margin-top:18px}
+.card{border:1px solid var(--line);border-radius:12px;padding:19px;background:linear-gradient(155deg,#fff,#f7fbfe)}
 .card p:last-child{margin-bottom:0}
-.callout{background:#eaf3f9;border-left:4px solid var(--blue);padding:15px 18px;border-radius:5px}
-.workflow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-items:stretch;gap:20px;margin:22px 0}
-.step{position:relative;background:#edf5fa;border:1px solid var(--line);border-radius:10px;padding:16px 13px;text-align:center}
-.step strong{display:block;color:var(--navy);line-height:1.3}
-.step span{display:block;color:var(--muted);font-size:14px;margin-top:7px}
-.step:not(:last-child)::after{content:"→";position:absolute;right:-17px;top:40%;font-size:21px;color:var(--blue);font-weight:800}
-iframe{display:block;width:100%;height:1450px;border:1px solid var(--line);border-radius:9px;background:#081018}
-.stat{font-size:35px;line-height:1;font-weight:800;color:var(--blue);margin:8px 0}
-.pill{display:inline-block;border-radius:999px;padding:3px 10px;background:var(--blue-2);font-size:13px;font-weight:700;color:var(--navy)}
-table{width:100%;border-collapse:collapse;margin:15px 0}
-th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
-th{color:var(--navy)}
-footer{padding-top:10px;padding-bottom:34px;color:var(--muted);font-size:14px}
-footer p{margin:8px 0}
-@media(max-width:760px){header{padding:24px 20px 42px}nav{margin-bottom:34px}.workflow{grid-template-columns:1fr;gap:10px}.step:not(:last-child)::after{content:"↓";top:auto;right:calc(50% - 7px);bottom:-21px;z-index:1}.step{padding:14px}main,footer{padding:18px}iframe{height:1250px}table{font-size:14px}}
+.callout{background:#eaf3f9;border-left:4px solid var(--blue);padding:15px 18px;border-radius:7px}
+.workflow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin:22px 0}
+.step{position:relative;background:linear-gradient(150deg,#eef6fb,#e2eff8);border:1px solid #c6dce9;border-radius:12px;padding:17px}
+.step:not(:last-child)::after{content:"→";position:absolute;right:-16px;top:38%;z-index:1;color:var(--blue);font-size:20px;font-weight:800}
+.step b{display:block;color:var(--navy);line-height:1.35}
+.step span{display:block;font-size:14px;color:var(--muted);margin-top:7px}
+.frame-wrap{padding:12px;border-radius:16px;background:linear-gradient(135deg,#102b42,#2a6794);box-shadow:0 12px 32px #142e441e}
+.frame-top{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#e8f3fa;padding:4px 8px 12px;font-size:14px}
+.frame-top .dots{letter-spacing:4px;color:#9fc3da}
+iframe{display:block;width:100%;height:1450px;border:1px solid #b9cede;border-radius:10px;background:var(--deep)}
+.scorecard{background:#fbfdff;border:1px solid var(--line);border-radius:13px;padding:20px}
+.score-head{display:flex;justify-content:space-between;gap:16px;align-items:baseline}
+.score-num{font-size:34px;font-weight:850;color:var(--blue);line-height:1.2}
+.score-label{font-size:14px;color:var(--muted)}
+.track{height:12px;background:#dce9f1;border-radius:999px;overflow:hidden;margin:12px 0 7px}
+.fill{height:100%;background:linear-gradient(90deg,#245f8c,#69a4ce);border-radius:999px}
+.baseline .fill{background:#90adc2}
+.stat-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
+.stat{background:#eef5fa;border:1px solid #d1e1ec;border-radius:10px;padding:14px}
+.stat strong{display:block;font-size:22px;color:var(--navy)}
+.stat span{font-size:13px;color:var(--muted)}
+ul{padding-left:22px}
+li{margin:8px 0}
+details{border:1px solid var(--line);border-radius:10px;padding:13px 16px;background:#fbfdff;margin-top:12px}
+summary{cursor:pointer;font-weight:750;color:var(--navy)}
+.small{font-size:14px;color:var(--muted)}
+footer{padding-top:5px;padding-bottom:35px;font-size:14px;color:var(--muted)}
+footer p{margin:7px 0}
+@media(max-width:780px){header{padding:20px 18px 42px}nav{margin-bottom:32px}.hero{grid-template-columns:1fr;gap:20px}.hero-card{max-width:310px}.workflow{grid-template-columns:1fr;gap:10px}.step:not(:last-child)::after{content:"↓";top:auto;right:calc(50% - 7px);bottom:-19px}.step{padding:14px}.stat-row{grid-template-columns:1fr}main,footer{padding:15px}iframe{height:1250px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
 <header>
 <nav aria-label="Main navigation">
-<a href="#project">Project</a><a href="#data">CDC data</a><a href="#workflow">How it works</a><a href="#explorer">Try the app</a><a href="#evaluation">Evaluation</a><a href="#limits">Limitations</a><a href="#walkthrough">Walkthrough</a>
+<a href="#story">Project</a><a href="#data">CDC data</a><a href="#how">How it works</a><a href="#app">Try the app</a><a href="#evaluation">Evaluation</a><a href="#limitations">Limitations</a><a href="#walkthrough">Walkthrough</a>
 </nav>
-<p class="hero-kicker">DESIGNTK 530 · Final project · CDC indicators</p>
+<div class="hero">
+<div class="hero-copy">
+<p class="kicker">DESIGNTK 530 · Final project · CDC indicators</p>
 <h1>Mind the Gap</h1>
-<p class="hero-lead">Explore how reported mental-health indicators vary across places, years, and populations—and see where the CDC data has gaps.</p>
-<p class="hero-note">Built for people in public health, healthcare, and anyone who wants to explore population-level patterns. Use the filters, inspect the bar graph, and read an AI-generated explanation of the selected data.</p>
-<a class="button" href="#explorer">Open the explorer below</a>
-<a class="button secondary" href="https://github.com/Faleeqwesa/mind-the-gap-mental-health">View the project code</a>
+<p class="lead">Explore how mental-health indicators vary across years, places, and populations—and see where CDC data is missing.</p>
+<p>Built for public-health and healthcare professionals, students, and curious community members. Choose a comparison, review the graph and AI summary, then decide what may deserve a closer look.</p>
+<a class="button" href="#app">Explore the application</a>
+<a class="button secondary" href="https://github.com/Faleeqwesa/mind-the-gap-mental-health">View source code</a>
+</div>
+<div class="hero-card"><strong>17 / 20</strong><span>checks passed in the latest recorded AI-summary result<br>One generated answer · not a 20-scenario test</span></div>
+</div>
 </header>
 <main>
-<section id="project">
-<p class="kicker">Project overview</p><h2>A clearer way to compare the indicators</h2>
-<p>The CDC’s mental-health records span multiple years, locations, questions, and demographic groups. Because coverage differs across those combinations, it can be difficult to compare patterns or notice missing years. Mind the Gap makes those choices visible in one place so a user can explore a question and identify findings that may deserve further investigation.</p>
+<section id="story">
+<p class="kicker section-kicker">01 · The project</p><h2>A more usable view of uneven data</h2>
+<p class="intro">The CDC’s mental-health indicators span different years, questions, places, and demographic groups. Since not every combination has the same coverage, the data can be difficult to compare and easy to misread. Mind the Gap puts those filters, year-by-year values, and coverage notes in one interactive view.</p>
 <div class="grid">
-<div class="card"><h3>Guiding question</h3><p>How do mental-health indicators vary by year, location, and population, and what coverage gaps appear when we compare them?</p></div>
-<div class="card"><h3>Who it is for</h3><p>Public-health teams, healthcare professionals and organizations, students, and other people exploring population-level mental-health data.</p></div>
-<div class="card"><h3>What it supports</h3><p>Reviewing selected estimates, comparing the available series, spotting gaps, and deciding what may warrant closer research. It does not explain causes or individual needs.</p></div>
+<div class="card"><h3>Guiding question</h3><p>How do population-level mental-health indicators vary by year, location, and population—and what gaps should a user keep in mind?</p></div>
+<div class="card"><h3>Intended audience</h3><p>People in public health and healthcare, organizations, students, and others exploring CDC mental-health trends.</p></div>
+<div class="card"><h3>Supported decision</h3><p>Which differences or missing areas may deserve further research, outreach, or resource planning? The tool helps surface questions; it does not prescribe an intervention.</p></div>
 </div>
-<p class="small">The midterm project explored trends and differences in mental-health days, depression, and other indicators. That early exploration highlighted uneven coverage across years and populations. Those observations are project background; the current app’s filtered results should be used for any current comparison.</p>
+<details><summary>How the design evolved</summary><p>The midterm project used exploratory charts to review indicators and demographics. The final experience turns that investigation into adjustable filters and an in-page graph and explanation. The app allows comparisons by location or demographic factor, and exposes year comparison only for a single selected year to keep the comparison meaningful.</p></details>
 </section>
 
 <section id="data">
-<p class="kicker">Data source</p><h2>CDC Chronic Disease Indicators</h2>
-<p>The app uses the Mental Health topic subset of the <a href="https://data.cdc.gov/Chronic-Disease-Indicators/U-S-Chronic-Disease-Indicators/hksd-2xuw/about_data" target="_blank" rel="noopener">CDC U.S. Chronic Disease Indicators dataset</a>. The project’s included data covers 2019–2023 and includes measures reported as percentages as well as average mentally unhealthy days.</p>
-<p>Questions in the topic include depression among adults, frequent mental distress among adults, postpartum depressive symptoms, current poor mental health among high-school students, and average mentally unhealthy days among adults. Which ages, locations, and years are available depends on the selected question and population group.</p>
-<div class="callout"><strong>Read comparisons with coverage in mind.</strong> Missing values are not zeros. The dataset does not provide the same observations for every year and population, so a visible difference may reflect coverage as well as underlying estimates.</div>
+<p class="kicker section-kicker">02 · The data</p><h2>CDC U.S. Chronic Disease Indicators</h2>
+<p>The app uses the Mental Health topic subset of the <a href="https://data.cdc.gov/Chronic-Disease-Indicators/U-S-Chronic-Disease-Indicators/hksd-2xuw/about_data" target="_blank" rel="noopener">CDC U.S. Chronic Disease Indicators dataset</a>, covering 2019–2023 in this project. Its questions include adult depression, frequent mental distress, postpartum depressive symptoms, poor mental health among high-school students, and average mentally unhealthy days among adults.</p>
+<div class="callout"><strong>Coverage is part of the result.</strong> Measures use percentages except the average mentally unhealthy days question. Availability varies by selected question, place, and population. Missing values are not zero, and differences in coverage can limit direct comparisons.</div>
+<p class="small">The midterm exploration also showed why these caveats matter: some indicators and demographic groups had less complete coverage than others. Those earlier observations are project background, not a substitute for the current filters and results.</p>
 </section>
 
-<section id="workflow">
-<p class="kicker">From selection to results</p><h2>How the application works</h2>
-<p>Users choose an indicator and estimate, then select a year range, locations, and a population group—or choose another factor to compare. The app sends those filters to the existing Render service. Its smolagents workflow retrieves matching CDC records, checks value and year coverage, and calculates annual summaries. The Streamlit app displays the graph, trend slope, and the service’s LLM-written explanation.</p>
-<div class="workflow" role="img" aria-label="User selects filters, the agent retrieves data and checks coverage, the data is analyzed, then the app shows a graph and an AI-generated explanation.">
-<div class="step"><strong>1 · User filters</strong><span>Choose question, years, place, and population.</span></div>
-<div class="step"><strong>2 · Retrieve &amp; check</strong><span>Agent tools fetch matching rows and inspect missing values and year coverage.</span></div>
-<div class="step"><strong>3 · Analyze</strong><span>Calculate comparable annual means for the selected measure and group.</span></div>
-<div class="step"><strong>4 · Graph</strong><span>Streamlit plots the selected series and describes its fitted trend.</span></div>
-<div class="step"><strong>5 · Explain</strong><span>An LLM turns the structured results into a concise plain-language summary.</span></div>
+<section id="how">
+<p class="kicker section-kicker">03 · System and method</p><h2>How it works</h2>
+<p class="intro">A user chooses an indicator and estimate, then filters years, locations, and a demographic group—or compares by another available factor. The existing Render service returns structured results; the Streamlit app presents the graph, trend slope, and generated explanation.</p>
+<div class="workflow" role="img" aria-label="User filters CDC indicators, the smolagents workflow retrieves, checks, and analyzes records, then the application shows a graph, trend slope, and AI explanation.">
+<div class="step"><b>1 · Select filters</b><span>Question, estimate, years, location, and population.</span></div>
+<div class="step"><b>2 · Retrieve</b><span>The smolagents workflow fetches the matching CDC records.</span></div>
+<div class="step"><b>3 · Check and analyze</b><span>Tools check value and year coverage, then calculate annual means.</span></div>
+<div class="step"><b>4 · Review results</b><span>The app shows a bar graph, regression slope, and LLM explanation.</span></div>
 </div>
 <div class="grid">
-<div class="card"><h3>What the agent does</h3><p>The smolagents workflow coordinates the implemented retrieval, data-quality, and analysis tools. It works on the selected CDC records and returns structured evidence for the app.</p></div>
-<div class="card"><h3>What the LLM adds</h3><p>The language model writes an explanation of the returned values, comparisons, and limitations. The explanation is generated from the selected results; it does not replace the underlying data or establish why a pattern occurred.</p></div>
-<div class="card"><h3>What regression means here</h3><p>For each plotted series, scikit-learn’s linear regression fits a line across the observed annual values. The displayed slope is the fitted change per year in that measure’s units. It describes the selected historical points; it is not a forecast or a causal estimate.</p></div>
+<div class="card"><h3>Agent + language model</h3><p>The smolagents workflow calls the implemented retrieval, data-quality, and analysis tools. The LLM explains the structured results in plain language. It is instructed not to invent values, treat missing data as zero, make causal claims, diagnose, or recommend treatment.</p></div>
+<div class="card"><h3>Traditional ML: linear regression</h3><p>For each plotted comparison group, scikit-learn fits <em>annual mean value</em> against <em>year</em> using the selected observed points. The slope reports the fitted change per year—in percentage points for percentage measures or days for the unhealthy-days measure. Positive and negative values describe an upward or downward historical trend; they are not forecasts.</p></div>
+<div class="card"><h3>Two interaction decisions</h3><p>The app sets the unit from the selected question so percentage and days measures are not mixed. It also keeps “Compare by year” available only for a one-year selection, while allowing place or demographic comparisons over a range.</p></div>
 </div>
-<p class="small">The portfolio links to the public source repository. The API key is kept in the Render service environment rather than this page.</p>
 </section>
 
-<section id="explorer">
-<p class="kicker">Interactive project</p><h2>Explore Mind the Gap</h2>
-<p class="muted">Select filters in the app, generate the graph, then review the summary and its evaluation. The app remains embedded here.</p>
-<iframe title="Mind the Gap CDC mental-health explorer" src="https://mind-the-gap-mental-health.streamlit.app/?embed=true" loading="lazy" allow="clipboard-read; clipboard-write"></iframe>
-<p class="small">If the embedded app does not load, <a href="https://mind-the-gap-mental-health.streamlit.app/" target="_blank" rel="noopener">open the Streamlit app in a new tab</a>.</p>
+<section id="app">
+<p class="kicker section-kicker">04 · Try the application</p><h2>Explore Mind the Gap</h2>
+<p class="intro">Choose a question and estimate, select years and a comparison group, then generate the graph and summary. Turn on the optional summary benchmark before running if you also want to inspect its 20 checks.</p>
+<div class="frame-wrap">
+<div class="frame-top"><span><span class="dots">● ● ●</span> &nbsp; Mind the Gap · Interactive explorer</span><a href="https://mind-the-gap-mental-health.streamlit.app/" target="_blank" rel="noopener" style="color:#e8f3fa">Open separately ↗</a></div>
+<iframe title="Mind the Gap interactive CDC mental-health explorer" src="https://mind-the-gap-mental-health.streamlit.app/?embed=true" loading="lazy" allow="clipboard-read; clipboard-write"></iframe>
+</div>
+<p class="small">If the embedded app is blocked, <a href="https://mind-the-gap-mental-health.streamlit.app/" target="_blank" rel="noopener">open it in a new tab</a>.</p>
 </section>
 
 <section id="evaluation">
-<p class="kicker">Two different evaluations</p><h2>Benchmarking and results</h2>
-<p>The project has an interactive evaluation of what the AI summary communicates and a separate offline check of deterministic data calculations. Their scores measure different things and should not be combined.</p>
+<p class="kicker section-kicker">05 · AI-summary evaluation</p><h2>How well did the summary communicate the result?</h2>
+<p class="intro">The latest recorded result scored one generated answer against 20 deterministic checks built from its selected filters and structured API response. The checks cover selected question, unit, estimate, years and population; record counts; missingness and coverage; and annual values and trend direction.</p>
 <div class="grid">
-<div class="card">
-<span class="pill">AI summary · one generated answer</span>
-<p class="stat">12 / 20 <span class="small">(60%)</span></p>
-<p>In the recorded app result, one generated summary met 12 of 20 filter-based checks. The filters-only baseline scored 9/20 (45%) because it can report selected controls but has no retrieved data evidence. The checks look for selected question, unit, estimate, years and population; record counts; missingness and coverage; and annual values and direction.</p>
-<p class="small">These are 20 scoring checks on one response—not 20 separate agent scenarios. The app scores the same API response used for the graph, without another request. Its expected values come from that response, so this is not an independent check against the CDC source. Deterministic text and number matching can miss paraphrases and contradictions.</p>
+<div class="scorecard">
+<div class="score-head"><span><strong>Generated summary</strong></span><span class="score-num">17/20</span></div>
+<div class="track" role="img" aria-label="Generated summary passed 85 percent of checks"><div class="fill" style="width:85%"></div></div>
+<div class="score-label">85% of checks detected the expected evidence in this recorded answer.</div>
 </div>
-<div class="card">
-<span class="pill">Offline pipeline · 20 fixed cases</span>
-<p class="stat">20 / 20 <span class="small">(100%)</span></p>
-<p>The bundled benchmark script compared annual means and missing-year sets with direct calculations from matching rows in the included CDC snapshot across 20 representative filter cases. The overall-only baseline matched the selected-group outputs exactly in 7/20 cases (35%).</p>
-<p class="small">For example, case C12 checks male high-school-student estimates for 2021–2023: values are present for 2021 and 2023, while 2022 is recorded as missing. The pipeline comparison checks that missing year and the annual values are handled as expected.</p>
-<p class="small">This is a deterministic calculation and coverage check, not an evaluation of the AI explanation, Render service, user usefulness, or clinical validity. Both calculation paths use the same bundled snapshot; 20/20 is not proof that the snapshot or CDC source is error-free.</p>
+<div class="scorecard baseline">
+<div class="score-head"><span><strong>Filters-only baseline</strong></span><span class="score-num">9/20</span></div>
+<div class="track" role="img" aria-label="Filters-only baseline passed 45 percent of checks"><div class="fill" style="width:45%"></div></div>
+<div class="score-label">45% · it sees submitted controls, but has no retrieved CDC evidence for the other checks.</div>
 </div>
 </div>
-<p class="small">The offline counts come from the repository’s checked-in <a href="summary.json">summary artifact</a> and <a href="cases.csv">20 case results</a>. The interactive AI score is a reported app result for one generated summary, not a repeated end-to-end benchmark. See the <a href="BENCHMARK.md">benchmark protocol</a> for scoring details and limitations.</p>
+<div class="stat-row">
+<div class="stat"><strong>19.45 seconds</strong><span>Recorded API response time for that request—not an average or accuracy score.</span></div>
+<div class="stat"><strong>20 checks</strong><span>Applied to the one generated explanation; they are not 20 separate agent scenarios.</span></div>
+<div class="stat"><strong>No extra call</strong><span>The benchmark reuses the response from the graph-and-summary request; no LLM judge is used.</span></div>
+</div>
+<div class="grid">
+<div class="card"><h3>What the score means</h3><p>Three checks did not detect their required evidence in the recorded summary. A deterministic text check can miss a valid paraphrase, so a failed check is not by itself proof that the underlying value is wrong. In the app, each row displays the question, pass/fail, full answer, expected evidence, rule, and rationale.</p></div>
+<div class="card"><h3>Evaluation limits and next steps</h3><p>Expected evidence is calculated from the same structured API response, so this does not independently verify the CDC source or establish clinical usefulness. To meet the rubric’s 20 representative-case requirement more fully, next steps are to run a fixed set of distinct filter combinations—including sparse and empty cases—and compare against independently reviewed expected values; then review check misses and passes with a human to improve the criteria.</p></div>
+</div>
+<details><summary>Scoring details</summary><p>Checks require exact selected names or expected values with context where specified. The baseline receives credit for the nine checks answerable from the controls alone (9/20); the other eleven require retrieved evidence. This is a coverage measure of the returned explanation, not a separate test of the agent’s tool choices or a source-data accuracy score.</p></details>
+<p class="small">Inspect the <a href="https://github.com/Faleeqwesa/mind-the-gap-mental-health/blob/main/benchmark_questions.json">20 check definitions</a> and <a href="https://github.com/Faleeqwesa/mind-the-gap-mental-health/blob/main/app.py">app scoring and results table</a>.</p>
 </section>
 
-<section id="limits">
-<p class="kicker">Interpretation</p><h2>Limitations</h2>
+<section id="limitations">
+<p class="kicker section-kicker">06 · Use with care</p><h2>Limitations</h2>
 <ul>
-<li>CDC estimates and coverage vary by question, year, location, estimate type, and population group. Some combinations have missing years or values; missing data must not be read as zero.</li>
-<li>Only like measures and selected populations should be compared. Differences in collection or coverage can limit direct comparisons; the dataset alone cannot identify the causes of a pattern.</li>
-<li>The regression line summarizes observed historical values within a selected series. It does not forecast what will happen next.</li>
-<li>The LLM explanation and deterministic benchmark checks are aids for reading the output, not clinical advice, a diagnosis, or independent validation of the source data.</li>
+<li>CDC coverage varies by measure, year, location, and population. Missing records are excluded, not treated as zero.</li>
+<li>Estimates for unlike questions or groups may not be directly comparable; availability and collection differences can shape the observed pattern.</li>
+<li>The regression slope describes the selected historical values; it cannot explain why a pattern occurred or predict future prevalence.</li>
+<li>The AI explanation and benchmark are aids for exploring population-level data, not individual medical advice, a diagnosis, or independent source validation.</li>
 </ul>
+<p><strong>What success looks like:</strong> A user can adjust the comparison, see where observations are present or missing, and identify a pattern that may deserve further investigation.</p>
 </section>
 
 <section id="walkthrough">
-<p class="kicker">Project demonstration</p><h2>Walkthrough video</h2>
-<p>A final walkthrough recording has not been added yet. It can go here once recorded; a useful walkthrough would show a filter selection, comparison, graph, AI summary, missing-data note, and the benchmark score.</p>
-<p class="small">Video link or embed: <strong>add final walkthrough recording URL here.</strong></p>
+<p class="kicker section-kicker">07 · Demonstration</p><h2>Project walkthrough</h2>
+<p>A final-project recording is still needed. Add a video showing the user question, chosen filters, resulting graph and AI explanation, missing-year coverage, and the optional 20-check evaluation.</p>
+<p class="callout"><strong>Video link:</strong> Add the final walkthrough recording URL here.</p>
 </section>
 </main>
 <footer>
-<p>Mind the Gap · DESIGNTK 530 · Fall 2026</p>
-<p><a href="https://github.com/Faleeqwesa/mind-the-gap-mental-health">Project repository</a> · <a href="https://mind-the-gap-mental-health.streamlit.app/">Live app</a> · <a href="https://data.cdc.gov/Chronic-Disease-Indicators/U-S-Chronic-Disease-Indicators/hksd-2xuw/about_data">CDC dataset</a></p>
-<p>Population-level descriptive estimates do not describe an individual's mental health.</p>
+<p><strong>Mind the Gap</strong> · DESIGNTK 530 · Fall 2026</p>
+<p><a href="https://github.com/Faleeqwesa/mind-the-gap-mental-health">Source repository</a> · <a href="https://mind-the-gap-mental-health.streamlit.app/">Live application</a> · <a href="https://data.cdc.gov/Chronic-Disease-Indicators/U-S-Chronic-Disease-Indicators/hksd-2xuw/about_data">CDC data source</a></p>
+<p>Population-level descriptive estimates are not individual mental-health assessments.</p>
 </footer>
 </body>
 </html>
