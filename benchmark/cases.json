@@ -1,6 +1,7 @@
 {
   "version": 1,
-  "description": "Twenty distinct valid filters for the existing AI summary evaluation.",
+  "description": "Twenty unique AI-summary filter scenarios across all five CDC Mental Health questions, including varied locations, demographics, year ranges, sparse coverage, and a no-numeric edge case.",
+  "selection_method": "The 20 valid cases span all five Mental Health questions, locations, sex, age, race/ethnicity, grade, multiple ranges, sparse/missing years and one valid no-numeric result.",
   "cases": [
     {
       "id": "A01",
@@ -410,4 +411,3 @@
     }
   ]
 }
-

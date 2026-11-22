@@ -1,0 +1,111 @@
+{
+  "version": 2,
+  "selection_inputs": [
+    "data_unit",
+    "question",
+    "start_year",
+    "end_year",
+    "locations",
+    "demographic_categories",
+    "demographic_groups",
+    "estimate_type"
+  ],
+  "cases": [
+    {
+      "id": "B01",
+      "template": "Does the summary name the selected CDC question?"
+    },
+    {
+      "id": "B02",
+      "template": "Does the summary identify the selected data unit?"
+    },
+    {
+      "id": "B03",
+      "template": "Does the summary identify the selected estimate type?"
+    },
+    {
+      "id": "B04",
+      "template": "Does the summary include the selected start year?"
+    },
+    {
+      "id": "B05",
+      "template": "Does the summary include the selected end year?"
+    },
+    {
+      "id": "B06",
+      "template": "Does the summary name every selected location?"
+    },
+    {
+      "id": "B07",
+      "template": "Does the summary name the selected population category?"
+    },
+    {
+      "id": "B08",
+      "template": "Does the summary name the selected population group?"
+    },
+    {
+      "id": "B09",
+      "template": "Does the summary clearly describe the selected time window?"
+    },
+    {
+      "id": "B10",
+      "template": "Does the summary report the number of matching CDC records?"
+    },
+    {
+      "id": "B11",
+      "template": "Does the summary report how many matching records contain numeric values?"
+    },
+    {
+      "id": "B12",
+      "template": "Does the summary report whether values are missing?"
+    },
+    {
+      "id": "B13",
+      "template": "Does the summary accurately describe observed-year coverage by location?"
+    },
+    {
+      "id": "B14",
+      "template": "Does the summary identify missing years without treating them as zero?"
+    },
+    {
+      "id": "B15",
+      "template": "Does the summary state which years are shared across selected locations?"
+    },
+    {
+      "id": "B16",
+      "template": "Does the summary describe the number of returned location/population series?"
+    },
+    {
+      "id": "B17",
+      "template": "Does the summary report each series' first year and mean?"
+    },
+    {
+      "id": "B18",
+      "template": "Does the summary report each series' latest year and mean?"
+    },
+    {
+      "id": "B19",
+      "template": "Does the summary report each series' highest annual mean and year?"
+    },
+    {
+      "id": "B20",
+      "template": "Does the summary characterize first-to-last direction without causal claims?"
+    }
+  ],
+  "scoring": {
+    "pass": "A deterministic criterion must find the required exact selected value(s) or expected response facts together with the specified context. A keyword alone is insufficient where a value or relationship is required.",
+    "numeric_tolerance": 0.05,
+    "api_calls": "Reuse the response from the user's ordinary graph-and-summary request; no additional API request or evaluator prompt.",
+    "judge": "No LLM judge is used.",
+    "baseline": "Filters-only baseline answers B01-B09 from submitted controls and receives no credit for evidence-dependent B10-B20.",
+    "displayed_fields": [
+      "question",
+      "pass",
+      "agent_answer",
+      "expected_answer",
+      "scoring_rule",
+      "why"
+    ],
+    "limitations": "Expected response facts currently come from the same structured API response, so this is not independent CDC source validation. Deterministic text checks can miss paraphrases and contradictions."
+  }
+}

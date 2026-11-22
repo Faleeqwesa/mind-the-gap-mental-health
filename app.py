@@ -1,17 +1,15 @@
 import os
 import json
+import time
 import requests
 import pandas as pd
 import plotly.express as px
 import streamlit as st
-import re
-import time
 from sklearn.linear_model import LinearRegression
+from evaluation import score_benchmark_summary
 
 API = os.getenv("RENDER_API_BASE", "https://cdc-mental-health-agent-api.onrender.com").rstrip("/")
 
-
-from evaluation import score_benchmark_summary
 
 st.set_page_config(page_title="Mind the Gap", page_icon="🧠", layout="wide")
 st.title("Mind the Gap")
@@ -95,14 +93,11 @@ else:
     dcats = [c]; opts = o["groups_by_category"].get(c, [])
     groups = st.multiselect("Groups to compare", opts, default=["Overall"] if compare == "Year" and "Overall" in opts else opts)
 
-st.subheader("Optional AI-summary evaluation")
-run_summary_benchmark = st.checkbox("Score the existing AI summary with 20 filter-based questions", value=False,
-                                    help="Select this before generating results to show the evaluation.")
-st.caption("Optional: check whether this one AI summary communicates the selected question, unit, population, years, record counts, missing data, annual values, and trends.")
-with st.expander("Evaluation details"):
-    st.caption("The 20 deterministic checks reuse the graph-and-summary response. The filters-only baseline is 9/20. Checks compare selected filters and evidence in that response; text matching can miss paraphrases or contradictions and does not establish factual or clinical accuracy. This is an optional one-summary quality check, not the official 20-scenario agent benchmark.")
-benchmark_filters = dict(data_unit=u, question=q, start_year=years[0], end_year=years[1], locations=locs,
-                         demographic_categories=dcats, demographic_groups=groups, estimate_type=t)
+st.subheader("Optional AI-summary check")
+run_summary_check = st.checkbox("Review this AI summary with the 20 evaluation questions")
+st.caption("This optional check reuses the existing graph-and-summary response.")
+
+st.subheader("3. Generate results")
 
 if st.button("Generate graph and AI summary", type="primary"):
     if not locs or not groups:
@@ -112,12 +107,15 @@ if st.button("Generate graph and AI summary", type="primary"):
                        demographic_categories=dcats, demographic_groups=groups, estimate_type=t)
         try:
             with st.spinner("The smolagents workflow is retrieving and checking CDC values…"):
-                benchmark_started = time.perf_counter()
+                started = time.perf_counter()
                 r = requests.post(f"{API}/analyze", json=payload, timeout=180); r.raise_for_status(); answer = r.json()
-                benchmark_latency = round(time.perf_counter() - benchmark_started, 2)
+                latency = time.perf_counter() - started
             d = pd.DataFrame(answer["analysis"]["summary_by_location_and_year"])
             if d.empty:
-                st.warning("No CDC values match these filters. Try another year, group, or estimate.")
+                if (answer.get("retrieval") or {}).get("matching_rows", 0):
+                    st.warning("Matching CDC records were found, but none contain numeric values to graph.")
+                else:
+                    st.warning("No CDC rows match these filters. Try another year, group, or estimate.")
             else:
                 d["Compare"] = d["YearStart"].astype(str) if compare == "Year" else d["LocationDesc"] if compare == "Location" else d["Stratification1"]
                 if compare in ("Location", "Year") and len(groups) > 1:
@@ -141,49 +139,51 @@ if st.button("Generate graph and AI summary", type="primary"):
                 fig.update_yaxes(title_text="Days" if u == "Number" else "Percent (%)", rangemode="tozero")
                 fig.update_xaxes(title_text="Year" if compare != "Year" else "Selected year")
                 st.plotly_chart(fig, use_container_width=True)
-                with st.container(border=True):
-                    st.markdown("### 2. AI-generated summary")
-                    st.markdown(answer.get("explanation", "The agent returned data without a text explanation."))
 
-                st.markdown("### 3. Data coverage")
-                quality = answer.get("quality", {})
-                missing_by_location = quality.get("missing_years_by_location", {})
-                observed_by_location = quality.get("years_by_location", {})
-                if missing_by_location:
-                    coverage_columns = st.columns(min(3, len(missing_by_location)))
-                    for i, location in enumerate(missing_by_location):
-                        with coverage_columns[i % len(coverage_columns)]:
-                            with st.container(border=True):
-                                st.markdown(f"**{location}**")
-                                missing_years = sorted(missing_by_location.get(location) or [])
-                                if missing_years:
-                                    st.warning("Missing years: " + ", ".join(map(str, missing_years)))
-                                else:
-                                    st.success("No missing years in the selected period.")
-                                observed_years = sorted(observed_by_location.get(location) or [])
-                                if observed_years:
-                                    st.caption("Years with records: " + ", ".join(map(str, observed_years)))
-                else:
-                    st.info("The service did not return year-coverage details for this selection.")
+            with st.container(border=True):
+                st.markdown("### 2. AI-generated summary")
+                st.markdown(answer.get("explanation", "The agent returned data without a text explanation."))
 
-                if run_summary_benchmark:
-                    case_rows = score_benchmark_summary(benchmark_filters, answer, answer.get("explanation", ""))
-                    agent_passes = sum(row["pass"] for row in case_rows)
-                    baseline_passes = sum(row["baseline_pass"] for row in case_rows)
-                    st.markdown("### Optional AI-summary quality check")
-                    st.caption("These checks evaluate the summary shown above and reuse this request.")
-                    metric_a, metric_b, metric_c = st.columns(3)
-                    metric_a.metric("Summary checks passed", f"{agent_passes}/20", f"{agent_passes / 20:.0%}")
-                    metric_b.metric("Filters-only baseline", f"{baseline_passes}/20", f"{baseline_passes / 20:.0%}")
-                    metric_c.metric("API response time", f"{benchmark_latency:.2f}s")
-                    with st.expander("Review all 20 evaluation checks"):
-                        st.dataframe(
-                            pd.DataFrame(case_rows)[["id", "question", "pass", "agent_answer", "expected_answer", "scoring_rule", "why"]],
-                            use_container_width=True, hide_index=True
-                        )
+            st.markdown("### 3. Data coverage")
+            quality = answer.get("quality", {})
+            missing_by_location = quality.get("missing_years_by_location", {})
+            observed_by_location = quality.get("years_by_location", {})
+            if missing_by_location:
+                coverage_columns = st.columns(min(3, len(missing_by_location)))
+                for i, location in enumerate(missing_by_location):
+                    with coverage_columns[i % len(coverage_columns)]:
+                        with st.container(border=True):
+                            st.markdown(f"**{location}**")
+                            missing_years = sorted(missing_by_location.get(location) or [])
+                            if missing_years:
+                                st.warning("Missing years: " + ", ".join(map(str, missing_years)))
+                            else:
+                                st.success("No missing years in the selected period.")
+                            observed_years = sorted(observed_by_location.get(location) or [])
+                            if observed_years:
+                                st.caption("Years with records: " + ", ".join(map(str, observed_years)))
+            else:
+                st.info("The service did not return year-coverage details for this selection.")
 
-                st.markdown("### 5. Linear trend analysis")
-                st.caption("A scikit-learn linear regression is fitted separately for each comparison group: year is the input and annual mean value is the outcome. Positive and negative slopes describe upward and downward historical change; this is not a future prediction.")
+            if run_summary_check:
+                checks = score_benchmark_summary(payload, answer, answer.get("explanation", ""))
+                passed = sum(item["pass"] for item in checks)
+                baseline = sum(item["baseline_pass"] for item in checks)
+                st.markdown("### Optional AI-summary check")
+                left, middle, right = st.columns(3)
+                left.metric("Summary checks passed", f"{passed}/20", f"{passed / 20:.0%}")
+                middle.metric("Filters-only baseline", f"{baseline}/20", f"{baseline / 20:.0%}")
+                right.metric("API response time", f"{latency:.2f}s")
+                with st.expander("Review all 20 questions"):
+                    review = pd.DataFrame(checks)[["id", "question", "pass", "agent_answer", "expected_answer", "scoring_rule", "why"]].copy()
+                    review["expected_answer"] = review["expected_answer"].map(lambda value: json.dumps(value, ensure_ascii=False))
+                    st.dataframe(review, use_container_width=True, hide_index=True)
+
+            st.markdown("### 4. Linear trend analysis")
+            st.caption("A scikit-learn linear regression is fitted separately for each comparison group: year is the input and annual mean value is the outcome. Positive and negative slopes describe upward and downward historical change; this is not a future prediction.")
+            if d.empty:
+                st.info("A linear trend is unavailable because no numeric annual values were returned.")
+            else:
                 slopes = {}
                 for name, group in d.groupby("Compare"):
                     if group["Year"].nunique() > 1:

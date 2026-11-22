@@ -1,0 +1,454 @@
+{
+  "protocol_version": 1,
+  "benchmark": "Mind the Gap AI-agent workflow benchmark",
+  "snapshot": "mental_health_cdi.csv, Mental Health topic subset from U.S. Chronic Disease Indicators downloaded 2026-09-30",
+  "endpoint": "POST /analyze",
+  "case_count": 20,
+  "baseline": "For summary-evidence coverage only, the existing filters-only baseline can answer B01-B09 (9/20, 45%) for each valid filter scenario; it cannot measure API success, data accuracy, or latency.",
+  "cases": [
+    {
+      "id": "A01",
+      "tag": "common-two-location-depression",
+      "scenario": "ordinary",
+      "expected_behavior": "analysis",
+      "filters": {
+        "question": "Depression among adults",
+        "data_unit": "%",
+        "estimate_type": "Crude Prevalence",
+        "start_year": 2019,
+        "end_year": 2023,
+        "locations": [
+          "North Carolina",
+          "United States"
+        ],
+        "demographic_categories": [
+          "Overall"
+        ],
+        "demographic_groups": [
+          "Overall"
+        ]
+      }
+    },
+    {
+      "id": "A02",
+      "tag": "female-north-carolina",
+      "scenario": "ordinary",
+      "expected_behavior": "analysis",
+      "filters": {
+        "question": "Depression among adults",
+        "data_unit": "%",
+        "estimate_type": "Crude Prevalence",
+        "start_year": 2019,
+        "end_year": 2023,
+        "locations": [
+          "North Carolina"
+        ],
+        "demographic_categories": [
+          "Sex"
+        ],
+        "demographic_groups": [
+          "Female"
+        ]
+      }
+    },
+    {
+      "id": "A03",
+      "tag": "male-two-location-range",
+      "scenario": "comparison",
+      "expected_behavior": "analysis",
+      "filters": {
+        "question": "Depression among adults",
+        "data_unit": "%",
+        "estimate_type": "Crude Prevalence",
+        "start_year": 2020,
+        "end_year": 2022,
+        "locations": [
+          "North Carolina",
+          "United States"
+        ],
+        "demographic_categories": [
+          "Sex"
+        ],
+        "demographic_groups": [
+          "Male"
+        ]
+      }
+    },
+    {
+      "id": "A04",
+      "tag": "younger-adult-age-stratum",
+      "scenario": "demographic",
+      "expected_behavior": "analysis",
+      "filters": {
+        "question": "Depression among adults",
+        "data_unit": "%",
+        "estimate_type": "Crude Prevalence",
+        "start_year": 2019,
+        "end_year": 2021,
+        "locations": [
+          "North Carolina"
+        ],
+        "demographic_categories": [
+          "Age"
+        ],
+        "demographic_groups": [
+          "Age 18-44"
+        ]
+      }
+    },
+    {
+      "id": "A05",
+      "tag": "black-adult-prevalence",
+      "scenario": "demographic",
+      "expected_behavior": "analysis",
+      "filters": {
+        "question": "Depression among adults",
+        "data_unit": "%",
+        "estimate_type": "Crude Prevalence",
+        "start_year": 2021,
+        "end_year": 2023,
+        "locations": [
+          "United States"
+        ],
+        "demographic_categories": [
+          "Race/Ethnicity"
+        ],
+        "demographic_groups": [
+          "Black, non-Hispanic"
+        ]
+      }
+    },
+    {
+      "id": "A06",
+      "tag": "hispanic-two-location-range",
+      "scenario": "comparison",
+      "expected_behavior": "analysis",
+      "filters": {
+        "question": "Depression among adults",
+        "data_unit": "%",
+        "estimate_type": "Crude Prevalence",
+        "start_year": 2019,
+        "end_year": 2023,
+        "locations": [
+          "North Carolina",
+          "United States"
+        ],
+        "demographic_categories": [
+          "Race/Ethnicity"
+        ],
+        "demographic_groups": [
+          "Hispanic"
+        ]
+      }
+    },
+    {
+      "id": "A07",
+      "tag": "frequent-distress-national-overall",
+      "scenario": "ordinary",
+      "expected_behavior": "analysis",
+      "filters": {
+        "question": "Frequent mental distress among adults",
+        "data_unit": "%",
+        "estimate_type": "Crude Prevalence",
+        "start_year": 2019,
+        "end_year": 2023,
+        "locations": [
+          "United States"
+        ],
+        "demographic_categories": [
+          "Overall"
+        ],
+        "demographic_groups": [
+          "Overall"
+        ]
+      }
+    },
+    {
+      "id": "A08",
+      "tag": "male-north-carolina-distress",
+      "scenario": "demographic",
+      "expected_behavior": "analysis",
+      "filters": {
+        "question": "Frequent mental distress among adults",
+        "data_unit": "%",
+        "estimate_type": "Crude Prevalence",
+        "start_year": 2019,
+        "end_year": 2021,
+        "locations": [
+          "North Carolina"
+        ],
+        "demographic_categories": [
+          "Sex"
+        ],
+        "demographic_groups": [
+          "Male"
+        ]
+      }
+    },
+    {
+      "id": "A09",
+      "tag": "older-adult-two-location",
+      "scenario": "comparison",
+      "expected_behavior": "analysis",
+      "filters": {
+        "question": "Frequent mental distress among adults",
+        "data_unit": "%",
+        "estimate_type": "Crude Prevalence",
+        "start_year": 2021,
+        "end_year": 2023,
+        "locations": [
+          "North Carolina",
+          "United States"
+        ],
+        "demographic_categories": [
+          "Age"
+        ],
+        "demographic_groups": [
+          "Age >=65"
+        ]
+      }
+    },
+    {
+      "id": "A10",
+      "tag": "white-adult-distress",
+      "scenario": "demographic",
+      "expected_behavior": "analysis",
+      "filters": {
+        "question": "Frequent mental distress among adults",
+        "data_unit": "%",
+        "estimate_type": "Crude Prevalence",
+        "start_year": 2019,
+        "end_year": 2023,
+        "locations": [
+          "United States"
+        ],
+        "demographic_categories": [
+          "Race/Ethnicity"
+        ],
+        "demographic_groups": [
+          "White, non-Hispanic"
+        ]
+      }
+    },
+    {
+      "id": "A11",
+      "tag": "high-school-overall-sparse-years",
+      "scenario": "sparse",
+      "expected_behavior": "analysis",
+      "filters": {
+        "question": "Current poor mental health among high school students",
+        "data_unit": "%",
+        "estimate_type": "Crude Prevalence",
+        "start_year": 2019,
+        "end_year": 2023,
+        "locations": [
+          "United States"
+        ],
+        "demographic_categories": [
+          "Overall"
+        ],
+        "demographic_groups": [
+          "Overall"
+        ]
+      }
+    },
+    {
+      "id": "A12",
+      "tag": "high-school-missing-year",
+      "scenario": "missing-year",
+      "expected_behavior": "analysis",
+      "filters": {
+        "question": "Current poor mental health among high school students",
+        "data_unit": "%",
+        "estimate_type": "Crude Prevalence",
+        "start_year": 2021,
+        "end_year": 2023,
+        "locations": [
+          "United States"
+        ],
+        "demographic_categories": [
+          "Sex"
+        ],
+        "demographic_groups": [
+          "Male"
+        ]
+      }
+    },
+    {
+      "id": "A13",
+      "tag": "grade-10-single-observed-year",
+      "scenario": "sparse",
+      "expected_behavior": "analysis",
+      "filters": {
+        "question": "Current poor mental health among high school students",
+        "data_unit": "%",
+        "estimate_type": "Crude Prevalence",
+        "start_year": 2020,
+        "end_year": 2022,
+        "locations": [
+          "North Carolina"
+        ],
+        "demographic_categories": [
+          "Grade"
+        ],
+        "demographic_groups": [
+          "Grade 10"
+        ]
+      }
+    },
+    {
+      "id": "A14",
+      "tag": "race-stratum-sparse",
+      "scenario": "sparse",
+      "expected_behavior": "analysis",
+      "filters": {
+        "question": "Current poor mental health among high school students",
+        "data_unit": "%",
+        "estimate_type": "Crude Prevalence",
+        "start_year": 2019,
+        "end_year": 2021,
+        "locations": [
+          "North Carolina"
+        ],
+        "demographic_categories": [
+          "Race/Ethnicity"
+        ],
+        "demographic_groups": [
+          "White, non-Hispanic"
+        ]
+      }
+    },
+    {
+      "id": "A15",
+      "tag": "postpartum-overall-coverage",
+      "scenario": "sparse",
+      "expected_behavior": "analysis",
+      "filters": {
+        "question": "Postpartum depressive symptoms among women with a recent live birth",
+        "data_unit": "%",
+        "estimate_type": "Crude Prevalence",
+        "start_year": 2019,
+        "end_year": 2023,
+        "locations": [
+          "United States"
+        ],
+        "demographic_categories": [
+          "Overall"
+        ],
+        "demographic_groups": [
+          "Overall"
+        ]
+      }
+    },
+    {
+      "id": "A16",
+      "tag": "postpartum-race-stratum",
+      "scenario": "demographic",
+      "expected_behavior": "analysis",
+      "filters": {
+        "question": "Postpartum depressive symptoms among women with a recent live birth",
+        "data_unit": "%",
+        "estimate_type": "Crude Prevalence",
+        "start_year": 2019,
+        "end_year": 2021,
+        "locations": [
+          "United States"
+        ],
+        "demographic_categories": [
+          "Race/Ethnicity"
+        ],
+        "demographic_groups": [
+          "Black, non-Hispanic"
+        ]
+      }
+    },
+    {
+      "id": "A17",
+      "tag": "postpartum-nc-no-numeric-values",
+      "scenario": "no-numeric-values",
+      "expected_behavior": "valid_no_numeric_estimates",
+      "filters": {
+        "question": "Postpartum depressive symptoms among women with a recent live birth",
+        "data_unit": "%",
+        "estimate_type": "Crude Prevalence",
+        "start_year": 2020,
+        "end_year": 2022,
+        "locations": [
+          "North Carolina"
+        ],
+        "demographic_categories": [
+          "Overall"
+        ],
+        "demographic_groups": [
+          "Overall"
+        ]
+      }
+    },
+    {
+      "id": "A18",
+      "tag": "unhealthy-days-two-location-number",
+      "scenario": "comparison",
+      "expected_behavior": "analysis",
+      "filters": {
+        "question": "Average mentally unhealthy days among adults",
+        "data_unit": "Number",
+        "estimate_type": "Crude Mean",
+        "start_year": 2021,
+        "end_year": 2023,
+        "locations": [
+          "North Carolina",
+          "United States"
+        ],
+        "demographic_categories": [
+          "Overall"
+        ],
+        "demographic_groups": [
+          "Overall"
+        ]
+      }
+    },
+    {
+      "id": "A19",
+      "tag": "unmatched-demographic-group",
+      "scenario": "empty-result",
+      "expected_behavior": "empty_data_rejection",
+      "filters": {
+        "question": "Depression among adults",
+        "data_unit": "%",
+        "estimate_type": "Crude Prevalence",
+        "start_year": 2019,
+        "end_year": 2023,
+        "locations": [
+          "North Carolina"
+        ],
+        "demographic_categories": [
+          "Race/Ethnicity"
+        ],
+        "demographic_groups": [
+          "__benchmark_no_match__"
+        ]
+      }
+    },
+    {
+      "id": "A20",
+      "tag": "missing-location-selection",
+      "scenario": "missing-location",
+      "expected_behavior": "missing_location_rejection",
+      "filters": {
+        "question": "Depression among adults",
+        "data_unit": "%",
+        "estimate_type": "Crude Prevalence",
+        "start_year": 2019,
+        "end_year": 2023,
+        "locations": [],
+        "demographic_categories": [
+          "Overall"
+        ],
+        "demographic_groups": [
+          "Overall"
+        ]
+      }
+    }
+  ]
+}
+

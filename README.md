@@ -1,32 +1,35 @@
 # Mind the Gap
 
-A Streamlit explorer for comparing CDC population-level mental-health indicators by question, year, location, age, sex, and race/ethnicity.
+Mind the Gap is a Streamlit explorer for CDC population-level mental-health indicators. Users filter by question, year, location, and population group, then review a graph, data-coverage notes, and an AI-generated summary. The existing Render API uses smolagents tools to retrieve, check, and analyze CDC records. Scikit-learn adds a descriptive linear trend for each graph series.
 
-- [Live application](https://mind-the-gap-mental-health.streamlit.app/)
-- [Project portfolio](https://faleeqwesa.github.io/mind-the-gap-mental-health/)
-- [GitHub repository](https://github.com/Faleeqwesa/mind-the-gap-mental-health)
-
-## Run locally
+## Run the app
 
 ```bash
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 streamlit run app.py
 ```
 
-The application uses the existing Render `/analyze` API; API credentials stay in Render. Its bundled data is the Mental Health subset of the CDC Chronic Disease Indicators snapshot dated 2026-09-30.
+The app calls the [existing Render API](https://github.com/Faleeqwesa/530_Midtermproject_FatimaAleem/tree/main/backend) configured in `app.py`; API credentials stay in Render. The interactive app is also hosted at [mind-the-gap-mental-health.streamlit.app](https://mind-the-gap-mental-health.streamlit.app/).
 
-## Official benchmark
+## Data
 
-The only official evaluation applies the existing Streamlit 20-question summary checker to 20 distinct filter scenarios. The app and reproducible runner use the same scorer and 9/20 filters-only baseline.
+`data/mental_health_cdi.csv` is the 21,883-row Mental Health subset used for local filter options and reproducibility. To rebuild it from the full CDC CSV, run:
+
+```bash
+python data/prepare_dataset.py path/to/U.S._Chronic_Disease_Indicators.csv
+```
+
+## AI-agent evaluation
+
+The one official benchmark applies the existing 20-question AI-summary checker to 20 filter scenarios and compares the results with the 9/20 filters-only baseline. The Streamlit app also offers the same optional checker for one generated summary. There is no LLM judge. See [BENCHMARK.md](BENCHMARK.md), [case definitions](benchmark/cases.json), [recorded results](benchmark/results.json), and the [summary chart](benchmark/summary.svg).
 
 ```bash
 python benchmark/run.py --dry-run
 python benchmark/run.py
 ```
 
-See [BENCHMARK.md](BENCHMARK.md) for current results, examples, limits, and improvements. Per-question results and response times are stored in `benchmark/results.json`.
+The live run calls the existing Render `/analyze` endpoint and writes actual results and question-level checks to `benchmark/results.json`. Review `BENCHMARK.md` for scoring details and limitations.
 
-## Methods
+## Portfolio
 
-The smolagents workflow retrieves CDC records, checks coverage, and analyzes annual values. The app reports missing years without treating them as zero and fits scikit-learn linear regression separately for each comparison group. Year is the input feature; annual mean value is the outcome. The slope describes historical change, not a forecast.
-
+`index.html` is the GitHub Pages portfolio. It embeds the hosted Streamlit app and presents the project, data, system workflow, benchmark, and limitations.

@@ -1,137 +1,149 @@
 #!/usr/bin/env python3
-"""Run the existing Streamlit summary scorer on 20 live agent responses."""
-import argparse, json, math, os, statistics, sys, time, urllib.error, urllib.request
+"""Run the 20-scenario AI-summary evaluation against the existing Render API."""
+import argparse
+import csv
+import hashlib
+import json
+import math
+import os
+import statistics
+import sys
+import time
+import urllib.error
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
-ROOT=Path(__file__).resolve().parents[1]
-sys.path.insert(0,str(ROOT))
-from evaluation import score_benchmark_summary
-CASE_FILE=Path(__file__).with_name("cases.json")
-RESULT_FILE=Path(__file__).with_name("results.json")
-SVG_FILE=Path(__file__).with_name("summary.svg")
-DEFAULT_API="https://cdc-mental-health-agent-api.onrender.com"
 
-def load_cases():
-    cases=json.loads(CASE_FILE.read_text(encoding="utf-8"))["cases"]
-    ids=[c["id"] for c in cases]
-    sigs=[json.dumps(c["filters"],sort_keys=True) for c in cases]
-    if len(cases)!=20 or len(set(ids))!=20 or len(set(sigs))!=20:
-        raise ValueError("Expected 20 unique scenarios and filter combinations.")
+ROOT = Path(__file__).resolve().parents[1]
+CASE_FILE = Path(__file__).with_name("cases.json")
+RESULT_FILE = Path(__file__).with_name("results.json")
+SVG_FILE = Path(__file__).with_name("summary.svg")
+DATA_FILE = ROOT / "data" / "mental_health_cdi.csv"
+BASELINE = 9
+
+sys.path.insert(0, str(ROOT))
+from evaluation import score_benchmark_summary
+
+
+def read_cases():
+    document = json.loads(CASE_FILE.read_text(encoding="utf-8"))
+    cases = document["cases"]
+    signatures = {json.dumps(c["filters"], sort_keys=True) for c in cases}
+    if len(cases) != 20 or len(signatures) != 20:
+        raise ValueError("Expected 20 different benchmark filter scenarios.")
     return cases
 
-def validate_snapshot(cases):
-    import csv
-    with (ROOT/"data"/"mental_health_cdi.csv").open(encoding="utf-8-sig",newline="") as f:
-        rows=list(csv.DictReader(f))
-    for c in cases:
-        x=c["filters"]
-        matched=[r for r in rows if r.get("Question")==x["question"] and r.get("DataValueUnit")==x["data_unit"]
-          and r.get("DataValueType")==x["estimate_type"] and r.get("LocationDesc") in x["locations"]
-          and (r.get("StratificationCategory1") or "Overall") in x["demographic_categories"]
-          and (r.get("Stratification1") or "Overall") in x["demographic_groups"]
-          and r.get("YearStart","").isdigit() and x["start_year"]<=int(r["YearStart"])<=x["end_year"]]
-        if not matched: raise ValueError(f"{c['id']} has no matching snapshot records.")
-    return len(rows)
 
-def post(api,filters,timeout):
-    req=urllib.request.Request(api.rstrip("/")+"/analyze",data=json.dumps(filters).encode(),
-      headers={"Content-Type":"application/json"},method="POST")
-    t=time.perf_counter()
-    try:
-        with urllib.request.urlopen(req,timeout=timeout) as r: status,body=r.status,r.read().decode("utf-8",errors="replace")
-    except urllib.error.HTTPError as e: status,body=e.code,e.read().decode("utf-8",errors="replace")
-    except Exception as e: return None,None,round(time.perf_counter()-t,3),f"{type(e).__name__}: {e}"
-    elapsed=round(time.perf_counter()-t,3)
-    try:return status,json.loads(body),elapsed,None
-    except json.JSONDecodeError:return status,None,elapsed,"Response was not valid JSON."
+def filter_exists(case):
+    f = case["filters"]
+    with DATA_FILE.open(encoding="utf-8-sig", newline="") as source:
+        rows = csv.DictReader(source)
+        return any(
+            row.get("Question") == f["question"]
+            and row.get("DataValueUnit") == f["data_unit"]
+            and row.get("DataValueType") == f["estimate_type"]
+            and row.get("LocationDesc") in f["locations"]
+            and (row.get("StratificationCategory1") or "Overall") in f["demographic_categories"]
+            and (row.get("Stratification1") or "Overall") in f["demographic_groups"]
+            and f["start_year"] <= int(row["YearStart"]) <= f["end_year"]
+            for row in rows
+        )
 
-def aggregate(results):
-    scored=[c for c in results if c.get("score") is not None]
-    times=[c["latency_seconds"] for c in results if c.get("latency_seconds") is not None]
-    passed=sum(c["score"]["passed"] for c in scored); total=len(scored)*20; baseline=len(scored)*9
-    return {"scenarios_planned":20,"scenarios_scored":len(scored),"summary_checks_passed":passed,
-      "summary_checks_total":total,"mean_checks_per_summary":round(passed/len(scored),2) if scored else None,
-      "filters_only_baseline_passed":baseline,"filters_only_baseline_total":total,
-      "filters_only_baseline_per_summary":"9/20","summary_pass_rate":round(passed/total,4) if total else None,
-      "baseline_pass_rate":round(baseline/total,4) if total else None,
-      "response_time_median_seconds":round(statistics.median(times),3) if times else None,
-      "response_time_p95_seconds":sorted(times)[max(0,math.ceil(.95*len(times))-1)] if times else None,
-      "cases":[{"id":c["id"],"scenario":c["scenario"],
-        "score":f"{c['score']['passed']}/20" if c.get("score") else None,
-        "latency_seconds":c.get("latency_seconds"),"status":c.get("status")} for c in results]}
 
-def write_svg(summary):
-    scored=[(c["id"],int(c["score"].split("/")[0])) for c in summary["cases"] if c["score"]]
-    w,h=920,370; left,top,cw,ch=60,48,820,235; gap=8; bw=(cw-gap*19)/20
-    bars=[]
-    for i,(cid,value) in enumerate(scored):
-        x=left+i*(bw+gap); bh=ch*value/20; y=top+ch-bh
-        bars.append(f'<rect x="{x:.1f}" y="{y:.1f}" width="{bw:.1f}" height="{bh:.1f}" rx="4" fill="#2878b8"><title>{cid}: {value}/20</title></rect><text x="{x+bw/2:.1f}" y="{top+ch+19}" text-anchor="middle" font-size="10">{cid[-2:]}</text>')
-    by=top+ch-ch*9/20
-    svg=f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" role="img" aria-label="AI summary checks passed in each scenario; dashed line is the 9 of 20 filters-only baseline">
-<rect width="100%" height="100%" fill="#f3f8fc"/>
-<text x="{left}" y="26" font-family="Arial,sans-serif" font-size="18" font-weight="700" fill="#17354e">AI-summary checks passed per scenario</text>
-<line x1="{left}" y1="{by:.1f}" x2="{left+cw}" y2="{by:.1f}" stroke="#143c5b" stroke-width="2" stroke-dasharray="7 5"/>
-<text x="{left+cw-2}" y="{by-7:.1f}" text-anchor="end" font-family="Arial,sans-serif" font-size="12" fill="#143c5b">Filters-only baseline 9/20</text>
-<line x1="{left}" y1="{top+ch}" x2="{left+cw}" y2="{top+ch}" stroke="#8299aa"/>
-{''.join(bars)}
-<text x="{left}" y="{h-14}" font-family="Arial,sans-serif" font-size="12" fill="#526b7e">Scenario A01–A20 · deterministic evidence coverage, not semantic accuracy</text></svg>'''
-    SVG_FILE.write_text(svg,encoding="utf-8")
+def save(document):
+    RESULT_FILE.write_text(json.dumps(document, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
-def compact_evidence(answer):
-    """Keep only fields consumed by the shared scorer for a compact replay file."""
-    if not isinstance(answer,dict): return None
-    retrieval=answer.get("retrieval") or {}
-    quality=answer.get("quality") or {}
-    analysis=answer.get("analysis") or {}
-    keep_rows=("LocationDesc","StratificationCategory1","Stratification1","YearStart","mean_value")
-    return {
-      "retrieval":{k:retrieval.get(k) for k in ("matching_rows","rows_with_values","rows_missing_values")},
-      "quality":{k:quality.get(k) for k in ("years_by_location","missing_years_by_location","years_shared_by_all_selected_locations")},
-      "analysis":{"valid_rows_used":analysis.get("valid_rows_used"),
-        "summary_by_location_and_year":[{k:row.get(k) for k in keep_rows}
-          for row in analysis.get("summary_by_location_and_year",[])]}}
+
+def write_chart(results):
+    scores = [item["summary_evaluation"]["passed"] for item in results]
+    width, left, top, row_h, chart_w = 780, 110, 55, 29, 560
+    height = top + len(scores) * row_h + 46
+    bits = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',
+            '<title id="title">AI-summary evaluation by scenario</title><desc id="desc">Twenty summary scores out of twenty. The filters-only baseline is nine.</desc>',
+            '<style>text{font:14px system-ui, sans-serif;fill:#17354e}.title{font-size:20px;font-weight:700}.bar{fill:#3679a8}.base{stroke:#8b9eac;stroke-dasharray:6 5;stroke-width:2}.score{font-weight:700}</style>',
+            '<rect width="100%" height="100%" fill="#fff" rx="12"/>',
+            '<text x="24" y="30" class="title">20 AI-generated summaries · 20 checks each</text>']
+    base_x = left + chart_w * BASELINE / 20
+    for i, score in enumerate(scores):
+        y = top + i * row_h
+        bits.append(f'<text x="28" y="{y+17}">{results[i]["id"]}</text>')
+        bits.append(f'<rect x="{left}" y="{y}" width="{chart_w}" height="18" rx="5" fill="#e5edf3"/>')
+        bits.append(f'<rect x="{left}" y="{y}" width="{chart_w*score/20:.1f}" height="18" rx="5" class="bar"/>')
+        bits.append(f'<text x="{left+chart_w+12}" y="{y+15}" class="score">{score}/20</text>')
+    bits.append(f'<line x1="{base_x:.1f}" y1="{top-7}" x2="{base_x:.1f}" y2="{top+len(scores)*row_h-5}" class="base"/>')
+    bits.append(f'<text x="{left}" y="{height-14}">0</text><text x="{left+chart_w-12}" y="{height-14}">20</text>')
+    bits.append(f'<text x="{base_x+6:.1f}" y="{height-14}">Baseline 9/20</text></svg>')
+    SVG_FILE.write_text("\n".join(bits), encoding="utf-8")
+
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__); p.add_argument("--api-base",default=os.getenv("RENDER_API_BASE",DEFAULT_API))
-    p.add_argument("--timeout",type=int,default=180); p.add_argument("--dry-run",action="store_true")
-    p.add_argument("--resume",action="store_true"); args=p.parse_args()
-    cases=load_cases(); rows=validate_snapshot(cases)
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--dry-run", action="store_true", help="check cases and data without API requests")
+    parser.add_argument("--api-base", default=os.getenv("RENDER_API_BASE", "https://cdc-mental-health-agent-api.onrender.com"))
+    args = parser.parse_args()
+    cases = read_cases()
+    digest = hashlib.sha256(DATA_FILE.read_bytes()).hexdigest()
+    missing = [case["id"] for case in cases if not filter_exists(case)]
+    if missing:
+        raise ValueError("Filter scenarios missing from snapshot: " + ", ".join(missing))
     if args.dry_run:
-        print(json.dumps({"status":"validated_no_requests_sent","scenarios":len(cases),"unique_filters":len(cases),
-          "matching_snapshot_records":rows,"scorer":"evaluation.score_benchmark_summary","criteria_per_summary":20,
-          "baseline_per_summary":"9/20"},indent=2)); return
-    old={}
-    if args.resume and RESULT_FILE.exists():
-        old={c["id"]:c for c in json.loads(RESULT_FILE.read_text(encoding="utf-8")).get("results",[])}
-    started=datetime.now(timezone.utc).isoformat()
-    results=[old[c["id"]] for c in cases if c["id"] in old]
-    done={c["id"] for c in results}
+        print(json.dumps({"status": "validated_no_requests_sent", "scenarios": len(cases),
+                          "unique_filter_sets": len({json.dumps(c['filters'], sort_keys=True) for c in cases}),
+                          "snapshot_sha256": digest, "summary_checks_per_scenario": 20,
+                          "filters_only_baseline": "9/20"}, indent=2))
+        return
+
+    started = datetime.now(timezone.utc).isoformat()
+    document = {"benchmark": "20-scenario AI-agent summary evaluation", "started_utc": started,
+                "api_endpoint": args.api_base.rstrip("/") + "/analyze", "snapshot_file": "data/mental_health_cdi.csv",
+                "snapshot_sha256": digest, "scenarios": [], "summary": {}}
+    save(document)
     for case in cases:
-        if case["id"] in done: continue
-        status,answer,latency,error=post(args.api_base,case["filters"],args.timeout)
-        explanation=(answer or {}).get("explanation","") if isinstance(answer,dict) else ""
-        score_rows=None
-        if status is not None and 200<=status<300 and isinstance(answer,dict) and explanation.strip():
-            score_rows=score_benchmark_summary(case["filters"],answer,explanation)
-        item={"id":case["id"],"scenario":case["scenario"],"filters":case["filters"],"status":status,
-          "latency_seconds":latency,"transport_error":error,"explanation":explanation,
-          "score":{"passed":sum(bool(x["pass"]) for x in score_rows),"total":len(score_rows)} if score_rows else None,
-          "baseline":{"passed":sum(bool(x["baseline_pass"]) for x in score_rows),"total":len(score_rows)} if score_rows else None,
-          "checks":[{"id":x["id"],"pass":bool(x["pass"])} for x in (score_rows or [])],
-          "response_evidence":compact_evidence(answer)}
-        results.append(item); results.sort(key=lambda x:x["id"])
-        doc={"benchmark":"Official AI-summary evaluation across 20 scenarios",
-          "scorer":"Exact evaluation.score_benchmark_summary function shared with app.py",
-          "started_utc":started,"updated_utc":datetime.now(timezone.utc).isoformat(),
-          "endpoint":args.api_base.rstrip("/")+"/analyze","scenarios":cases,"summary":aggregate(results),"results":results}
-        RESULT_FILE.write_text(json.dumps(doc,indent=2,ensure_ascii=False),encoding="utf-8")
-        write_svg(doc["summary"])
-        score=f"{item['score']['passed']}/20" if item["score"] else "no summary"
-        print(f"{item['id']}: HTTP {status}; {score}; {latency:.2f}s",flush=True)
-    doc=json.loads(RESULT_FILE.read_text(encoding="utf-8")); doc["updated_utc"]=datetime.now(timezone.utc).isoformat()
-    doc["summary"]=aggregate(doc["results"]); RESULT_FILE.write_text(json.dumps(doc,indent=2,ensure_ascii=False),encoding="utf-8")
-    write_svg(doc["summary"]); print(json.dumps(doc["summary"],indent=2),flush=True)
+        t0 = time.perf_counter()
+        record = {"id": case["id"], "scenario": case["scenario"], "filters": case["filters"]}
+        try:
+            request = urllib.request.Request(document["api_endpoint"], data=json.dumps(case["filters"]).encode(),
+                                             headers={"Content-Type": "application/json"}, method="POST")
+            with urllib.request.urlopen(request, timeout=180) as response:
+                answer = json.loads(response.read().decode("utf-8"))
+                record["http_status"] = response.status
+            record["response_seconds"] = round(time.perf_counter() - t0, 3)
+            record["summary"] = answer.get("explanation", "")
+            evidence = {key: answer.get(key, {}) for key in ("retrieval", "quality", "analysis")}
+            record["agent_evidence"] = evidence
+            rows = score_benchmark_summary(case["filters"], evidence, record["summary"])
+            record["summary_evaluation"] = {"passed": sum(bool(row["pass"]) for row in rows), "total": 20,
+                                             "filters_only_baseline": BASELINE,
+                                             "checks": [{"id": row["id"], "pass": bool(row["pass"])} for row in rows]}
+        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError, ValueError) as exc:
+            record["http_status"] = getattr(exc, "code", None)
+            record["response_seconds"] = round(time.perf_counter() - t0, 3)
+            record["summary"] = ""
+            record["error"] = str(exc)
+            record["agent_evidence"] = {}
+            record["summary_evaluation"] = {"passed": 0, "total": 20, "filters_only_baseline": BASELINE, "checks": []}
+        document["scenarios"].append(record)
+        scores = [x["summary_evaluation"]["passed"] for x in document["scenarios"]]
+        times = [x["response_seconds"] for x in document["scenarios"]]
+        ordered_times = sorted(times)
+        document["summary"] = {"scenarios_completed": len(scores), "summary_checks_passed": sum(scores),
+                               "summary_checks_total": 20 * len(scores), "filters_only_baseline_passed": BASELINE * len(scores),
+                               "filters_only_baseline_total": 20 * len(scores), "mean_checks_per_summary": round(statistics.mean(scores), 2),
+                               "summary_rate_percent": round(sum(scores) / (20 * len(scores)) * 100, 2),
+                               "filters_only_baseline_rate_percent": round(BASELINE / 20 * 100, 2),
+                               "response_median_seconds": round(statistics.median(times), 3),
+                               "response_p95_seconds": ordered_times[math.ceil(.95 * len(ordered_times)) - 1],
+                               "response_maximum_seconds": max(times),
+                               "response_time_seconds": {"median": statistics.median(times),
+                                                          "p95": ordered_times[math.ceil(.95 * len(ordered_times)) - 1],
+                                                          "maximum": max(times), "samples": len(times)}}
+        save(document)
+        write_chart(document["scenarios"])
+        print(f"{case['id']}: {record['summary_evaluation']['passed']}/20 in {record['response_seconds']}s", flush=True)
+    document["completed_utc"] = datetime.now(timezone.utc).isoformat()
+    save(document)
+    print(json.dumps(document["summary"], indent=2))
 
-if __name__=="__main__": main()
 
+if __name__ == "__main__":
+    main()
