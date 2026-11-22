@@ -272,11 +272,9 @@ else:
 st.subheader("Optional AI-summary evaluation")
 run_summary_benchmark = st.checkbox("Score the existing AI summary with 20 filter-based questions", value=False,
                                     help="Select this before generating results to show the evaluation.")
-with st.expander("What the evaluation checks"):
-    st.write("The 20 checks are built from your selected filters and assess the returned summary: question, unit, population, years, record counts, missing data, annual values, and trends. They are checks on one answer—not 20 prompts sent to the agent.")
-    st.write("The filters-only baseline is 9/20 because it knows your selections but has no retrieved CDC data. Scoring reuses the graph-and-summary API response, with no extra API call. It is a deterministic coverage check, not an independent CDC data verification; no LLM judge is used.")
+st.caption("Optional: check whether this one AI summary communicates the selected question, unit, population, years, record counts, missing data, annual values, and trends.")
 with st.expander("Evaluation details"):
-    st.caption("Each check compares the summary with selected filters or evidence in the same API response. Exact names, values, and context are required where specified. Text matching can miss paraphrases or contradictions and does not establish usefulness or clinical safety.")
+    st.caption("The 20 deterministic checks reuse the graph-and-summary response. The filters-only baseline is 9/20. Checks compare selected filters and evidence in that response; text matching can miss paraphrases or contradictions and does not establish factual or clinical accuracy. This is an optional one-summary quality check, not the official 20-scenario agent benchmark.")
 benchmark_filters = dict(data_unit=u, question=q, start_year=years[0], end_year=years[1], locations=locs,
                          demographic_categories=dcats, demographic_groups=groups, estimate_type=t)
 
@@ -346,7 +344,7 @@ if st.button("Generate graph and AI summary", type="primary"):
                     case_rows = score_benchmark_summary(benchmark_filters, answer, answer.get("explanation", ""))
                     agent_passes = sum(row["pass"] for row in case_rows)
                     baseline_passes = sum(row["baseline_pass"] for row in case_rows)
-                    st.markdown("### 4. AI-summary benchmark")
+                    st.markdown("### Optional AI-summary quality check")
                     st.caption("These checks evaluate the summary shown above and reuse this request.")
                     metric_a, metric_b, metric_c = st.columns(3)
                     metric_a.metric("Summary checks passed", f"{agent_passes}/20", f"{agent_passes / 20:.0%}")
@@ -359,7 +357,7 @@ if st.button("Generate graph and AI summary", type="primary"):
                         )
 
                 st.markdown("### 5. Linear trend analysis")
-                st.caption("Linear regression describes the fitted change across observed years. A positive slope points upward; a negative slope points downward. This is a descriptive trend, not a prediction.")
+                st.caption("A scikit-learn linear regression is fitted separately for each comparison group: year is the input and annual mean value is the outcome. Positive and negative slopes describe upward and downward historical change; this is not a future prediction.")
                 slopes = {}
                 for name, group in d.groupby("Compare"):
                     if group["Year"].nunique() > 1:
