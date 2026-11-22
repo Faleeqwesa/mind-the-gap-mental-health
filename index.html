@@ -122,7 +122,7 @@ footer p{margin:7px 0}
 
 <section id="app">
 <p class="kicker section-kicker">04 · Try the application</p><h2>Explore Mind the Gap</h2>
-<p class="intro">Choose a question and estimate, select years and a comparison group, then generate the graph and summary. Turn on the optional summary quality check to inspect its 20 criteria.</p>
+<p class="intro">Choose a question and estimate, select years and a comparison group, then generate the graph and summary.</p>
 <div class="frame-wrap">
 <div class="frame-top"><span><span class="dots">● ● ●</span> &nbsp; Mind the Gap · Interactive explorer</span><a href="https://mind-the-gap-mental-health.streamlit.app/" target="_blank" rel="noopener" style="color:#e8f3fa">Open separately ↗</a></div>
 <iframe title="Mind the Gap interactive CDC mental-health explorer" src="https://mind-the-gap-mental-health.streamlit.app/?embed=true" loading="lazy" allow="clipboard-read; clipboard-write"></iframe>
@@ -131,21 +131,22 @@ footer p{margin:7px 0}
 </section>
 
 <section id="evaluation">
-<p class="kicker section-kicker">05 · Official benchmark</p><h2>20 scenarios against the live AI agent</h2>
-<p class="intro">The fixed benchmark calls the existing Render <code>/analyze</code> workflow and compares structured annual values and coverage with independent calculations from the bundled CDC snapshot.</p>
+<p class="kicker section-kicker">05 · Official benchmark</p><h2>20 scenarios tested against the AI agent</h2>
+<p class="intro">The fixed test set calls the existing Render <code>/analyze</code> workflow. The benchmark compares returned annual values and year coverage with independent calculations from the bundled CDC snapshot.</p>
 <div class="grid">
-<div class="scorecard"><div class="score-head"><span><strong>Usable analysis results</strong></span><span class="score-num">18/18</span></div><div class="score-label">All valid analysis scenarios returned usable results; both invalid-input cases were rejected as expected (2/2).</div></div>
-<div class="scorecard"><div class="score-head"><span><strong>Structured snapshot matches</strong></span><span class="score-num">18/18</span></div><div class="score-label">Annual values and coverage matched independent calculations from the included snapshot.</div></div>
-<div class="scorecard"><div class="score-head"><span><strong>Summary evidence coverage</strong></span><span class="score-num">285/360</span></div><div class="score-label">79.2%, versus 162/360 (45%) for the comparable filters-only baseline.</div></div>
+<div class="scorecard"><div class="score-head"><span><strong>Usable results</strong></span><span class="score-num">18/18</span></div><div class="score-label">All valid scenarios returned usable results; both invalid-input cases were rejected as expected (2/2).</div></div>
+<div class="scorecard"><div class="score-head"><span><strong>Structured accuracy</strong></span><span class="score-num">18/18</span></div><div class="score-label">Annual values and coverage matched independent snapshot calculations.</div></div>
+<div class="scorecard"><div class="score-head"><span><strong>Summary evidence</strong></span><span class="score-num">285/360</span></div><div class="score-label">79.2% of checks passed. The filters-only baseline passed 162/360 (45%); this comparison applies only to summary evidence coverage.</div></div>
 </div>
 <div class="stat-row">
-<div class="stat"><strong>11.405s</strong><span>Median response time · p95 14.902s</span></div>
-<div class="stat"><strong>A01 · 15/20</strong><span>Successful structured comparison example</span></div>
-<div class="stat"><strong>A17 · 11/20</strong><span>Lowest summary evidence score; no numeric values</span></div>
+<div class="stat"><strong>11.405s</strong><span>Median response · p95 14.902s</span></div>
+<div class="stat"><strong>A01 · 15/20</strong><span>North Carolina vs U.S. adult depression, 2019–2023; structured values matched.</span></div>
+<div class="stat"><strong>A17 · 11/20</strong><span>Postpartum indicator had no numeric values; returned coverage matched the snapshot.</span></div>
 </div>
-<img src="agent_benchmark.svg" alt="Summary chart of the 20-case AI-agent benchmark" style="width:100%;max-width:760px;display:block;margin:1rem auto">
-<div class="card"><h3>What to improve</h3><p>For valid cases with no numeric observations, make the explanation explicitly say that no annual numeric comparison or trend is available. Human-review flagged summary checks to separate true omissions from valid paraphrases; semantic review is still pending.</p></div>
-<p class="small">Run and inspect the <a href="BENCHMARK.md">benchmark protocol and results</a>, <a href="agent_benchmark_cases.json">fixed cases</a>, <a href="agent_benchmark_results.json">recorded responses</a>, and <a href="agent_benchmark_review.csv">review sheet</a>. Evidence checks are not human-rated semantic accuracy. Baseline applies only to summary evidence coverage.</p>
+<img src="agent_benchmark.svg" alt="20-scenario AI-agent benchmark results compared with the filters-only evidence baseline" style="width:100%;max-width:760px;display:block;margin:1rem auto">
+<div class="card"><h3>What the results taught us</h3><p>The agent returned correct structured values and coverage for the tested scenarios, but summary evidence was less consistent when information was sparse or absent. A17 shows why a usable response can still need a clearer explanation when there are no numeric observations. Automated evidence checks do not verify semantic accuracy; human review is pending.</p>
+<h3>Next improvements</h3><ol><li>Make no-numeric responses clearly state that no annual numeric comparison or trend is available.</li><li>Human-review the flagged summary checks, distinguish true omissions from valid paraphrases, then refine the criteria and explanation guidance.</li></ol></div>
+<p class="small">Reproduce the run and inspect the <a href="BENCHMARK.md">protocol and results</a>, <a href="agent_benchmark_cases.json">fixed cases</a>, <a href="agent_benchmark_results.json">recorded responses</a>, and <a href="agent_benchmark_review.csv">review sheet</a>.</p>
 </section>
 
 <section id="limitations">
@@ -161,7 +162,7 @@ footer p{margin:7px 0}
 
 <section id="walkthrough">
 <p class="kicker section-kicker">07 · Demonstration</p><h2>Project walkthrough</h2>
-<p>A final-project recording is still needed. Add a video showing the user question, chosen filters, resulting graph and AI explanation, missing-year coverage, and the optional 20-check evaluation.</p>
+<p>A final-project recording is still needed. Add a short video showing the user question, chosen filters, resulting graph and AI explanation, and missing-year coverage.</p>
 <p class="callout"><strong>Video link:</strong> Add the final walkthrough recording URL here.</p>
 </section>
 </main>
