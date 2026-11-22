@@ -1,16 +1,10 @@
 {
-  "protocol_version": 1,
-  "benchmark": "Mind the Gap AI-agent workflow benchmark",
-  "snapshot": "mental_health_cdi.csv, Mental Health topic subset from U.S. Chronic Disease Indicators downloaded 2026-09-30",
-  "endpoint": "POST /analyze",
-  "case_count": 20,
-  "baseline": "For summary-evidence coverage only, the existing filters-only baseline can answer B01-B09 (9/20, 45%) for each valid filter scenario; it cannot measure API success, data accuracy, or latency.",
+  "version": 1,
+  "description": "Twenty distinct valid filters for the existing AI summary evaluation.",
   "cases": [
     {
       "id": "A01",
-      "tag": "common-two-location-depression",
-      "scenario": "ordinary",
-      "expected_behavior": "analysis",
+      "scenario": "common-two-location-depression",
       "filters": {
         "question": "Depression among adults",
         "data_unit": "%",
@@ -31,9 +25,7 @@
     },
     {
       "id": "A02",
-      "tag": "female-north-carolina",
-      "scenario": "ordinary",
-      "expected_behavior": "analysis",
+      "scenario": "female-north-carolina",
       "filters": {
         "question": "Depression among adults",
         "data_unit": "%",
@@ -53,9 +45,7 @@
     },
     {
       "id": "A03",
-      "tag": "male-two-location-range",
-      "scenario": "comparison",
-      "expected_behavior": "analysis",
+      "scenario": "male-two-location-range",
       "filters": {
         "question": "Depression among adults",
         "data_unit": "%",
@@ -76,9 +66,7 @@
     },
     {
       "id": "A04",
-      "tag": "younger-adult-age-stratum",
-      "scenario": "demographic",
-      "expected_behavior": "analysis",
+      "scenario": "younger-adult-age-stratum",
       "filters": {
         "question": "Depression among adults",
         "data_unit": "%",
@@ -98,9 +86,7 @@
     },
     {
       "id": "A05",
-      "tag": "black-adult-prevalence",
-      "scenario": "demographic",
-      "expected_behavior": "analysis",
+      "scenario": "black-adult-prevalence",
       "filters": {
         "question": "Depression among adults",
         "data_unit": "%",
@@ -120,9 +106,7 @@
     },
     {
       "id": "A06",
-      "tag": "hispanic-two-location-range",
-      "scenario": "comparison",
-      "expected_behavior": "analysis",
+      "scenario": "hispanic-two-location-range",
       "filters": {
         "question": "Depression among adults",
         "data_unit": "%",
@@ -143,9 +127,7 @@
     },
     {
       "id": "A07",
-      "tag": "frequent-distress-national-overall",
-      "scenario": "ordinary",
-      "expected_behavior": "analysis",
+      "scenario": "frequent-distress-national-overall",
       "filters": {
         "question": "Frequent mental distress among adults",
         "data_unit": "%",
@@ -165,9 +147,7 @@
     },
     {
       "id": "A08",
-      "tag": "male-north-carolina-distress",
-      "scenario": "demographic",
-      "expected_behavior": "analysis",
+      "scenario": "male-north-carolina-distress",
       "filters": {
         "question": "Frequent mental distress among adults",
         "data_unit": "%",
@@ -187,9 +167,7 @@
     },
     {
       "id": "A09",
-      "tag": "older-adult-two-location",
-      "scenario": "comparison",
-      "expected_behavior": "analysis",
+      "scenario": "older-adult-two-location",
       "filters": {
         "question": "Frequent mental distress among adults",
         "data_unit": "%",
@@ -210,9 +188,7 @@
     },
     {
       "id": "A10",
-      "tag": "white-adult-distress",
-      "scenario": "demographic",
-      "expected_behavior": "analysis",
+      "scenario": "white-adult-distress",
       "filters": {
         "question": "Frequent mental distress among adults",
         "data_unit": "%",
@@ -232,9 +208,7 @@
     },
     {
       "id": "A11",
-      "tag": "high-school-overall-sparse-years",
-      "scenario": "sparse",
-      "expected_behavior": "analysis",
+      "scenario": "high-school-overall-sparse-years",
       "filters": {
         "question": "Current poor mental health among high school students",
         "data_unit": "%",
@@ -254,9 +228,7 @@
     },
     {
       "id": "A12",
-      "tag": "high-school-missing-year",
-      "scenario": "missing-year",
-      "expected_behavior": "analysis",
+      "scenario": "high-school-missing-year",
       "filters": {
         "question": "Current poor mental health among high school students",
         "data_unit": "%",
@@ -276,9 +248,7 @@
     },
     {
       "id": "A13",
-      "tag": "grade-10-single-observed-year",
-      "scenario": "sparse",
-      "expected_behavior": "analysis",
+      "scenario": "grade-10-single-observed-year",
       "filters": {
         "question": "Current poor mental health among high school students",
         "data_unit": "%",
@@ -298,9 +268,7 @@
     },
     {
       "id": "A14",
-      "tag": "race-stratum-sparse",
-      "scenario": "sparse",
-      "expected_behavior": "analysis",
+      "scenario": "race-stratum-sparse",
       "filters": {
         "question": "Current poor mental health among high school students",
         "data_unit": "%",
@@ -320,9 +288,7 @@
     },
     {
       "id": "A15",
-      "tag": "postpartum-overall-coverage",
-      "scenario": "sparse",
-      "expected_behavior": "analysis",
+      "scenario": "postpartum-overall-coverage",
       "filters": {
         "question": "Postpartum depressive symptoms among women with a recent live birth",
         "data_unit": "%",
@@ -342,9 +308,7 @@
     },
     {
       "id": "A16",
-      "tag": "postpartum-race-stratum",
-      "scenario": "demographic",
-      "expected_behavior": "analysis",
+      "scenario": "postpartum-race-stratum",
       "filters": {
         "question": "Postpartum depressive symptoms among women with a recent live birth",
         "data_unit": "%",
@@ -364,9 +328,7 @@
     },
     {
       "id": "A17",
-      "tag": "postpartum-nc-no-numeric-values",
-      "scenario": "no-numeric-values",
-      "expected_behavior": "valid_no_numeric_estimates",
+      "scenario": "postpartum-nc-no-numeric-values",
       "filters": {
         "question": "Postpartum depressive symptoms among women with a recent live birth",
         "data_unit": "%",
@@ -386,9 +348,7 @@
     },
     {
       "id": "A18",
-      "tag": "unhealthy-days-two-location-number",
-      "scenario": "comparison",
-      "expected_behavior": "analysis",
+      "scenario": "unhealthy-days-two-location-number",
       "filters": {
         "question": "Average mentally unhealthy days among adults",
         "data_unit": "Number",
@@ -409,43 +369,42 @@
     },
     {
       "id": "A19",
-      "tag": "unmatched-demographic-group",
-      "scenario": "empty-result",
-      "expected_behavior": "empty_data_rejection",
+      "scenario": "unhealthy-days-overall-full-range",
       "filters": {
-        "question": "Depression among adults",
-        "data_unit": "%",
-        "estimate_type": "Crude Prevalence",
+        "question": "Average mentally unhealthy days among adults",
+        "data_unit": "Number",
+        "estimate_type": "Crude Mean",
         "start_year": 2019,
         "end_year": 2023,
         "locations": [
-          "North Carolina"
+          "North Carolina",
+          "United States"
         ],
         "demographic_categories": [
-          "Race/Ethnicity"
+          "Overall"
         ],
         "demographic_groups": [
-          "__benchmark_no_match__"
+          "Overall"
         ]
       }
     },
     {
       "id": "A20",
-      "tag": "missing-location-selection",
-      "scenario": "missing-location",
-      "expected_behavior": "missing_location_rejection",
+      "scenario": "arizona-middle-age-distress",
       "filters": {
-        "question": "Depression among adults",
+        "question": "Frequent mental distress among adults",
         "data_unit": "%",
         "estimate_type": "Crude Prevalence",
         "start_year": 2019,
         "end_year": 2023,
-        "locations": [],
+        "locations": [
+          "Arizona"
+        ],
         "demographic_categories": [
-          "Overall"
+          "Age"
         ],
         "demographic_groups": [
-          "Overall"
+          "Age 45-64"
         ]
       }
     }

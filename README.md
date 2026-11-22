@@ -1,10 +1,10 @@
 # Mind the Gap
 
-Live app: https://mind-the-gap-mental-health.streamlit.app/  
-Project site: https://faleeqwesa.github.io/mind-the-gap-mental-health/  
-Source: https://github.com/Faleeqwesa/mind-the-gap-mental-health
+A Streamlit explorer for comparing CDC population-level mental-health indicators by question, year, location, age, sex, and race/ethnicity.
 
-Mind the Gap helps public-health and healthcare audiences compare CDC mental-health indicators by question, year, location, and demographic group. Choose filters, compare the bar graph and AI explanation, then review year coverage and historical trends. The portfolio embeds the app on the same page.
+- [Live application](https://mind-the-gap-mental-health.streamlit.app/)
+- [Project portfolio](https://faleeqwesa.github.io/mind-the-gap-mental-health/)
+- [GitHub repository](https://github.com/Faleeqwesa/mind-the-gap-mental-health)
 
 ## Run locally
 
@@ -13,16 +13,20 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-The included `mental_health_cdi.csv` is the Mental Health topic subset from the U.S. Chronic Disease Indicators snapshot dated 2026-09-30.
+The application uses the existing Render `/analyze` API; API credentials stay in Render. Its bundled data is the Mental Health subset of the CDC Chronic Disease Indicators snapshot dated 2026-09-30.
 
-## AI agent
+## Official benchmark
 
-The app calls the existing Render API at `https://cdc-mental-health-agent-api.onrender.com/analyze`. Its smolagents workflow retrieves CDC records, checks coverage, and analyzes the selected data. The key remains in Render; the Streamlit app does not require it.
+The only official evaluation applies the existing Streamlit 20-question summary checker to 20 distinct filter scenarios. The app and reproducible runner use the same scorer and 9/20 filters-only baseline.
 
-## Methods and evaluation
+```bash
+python benchmark/run.py --dry-run
+python benchmark/run.py
+```
 
-The app groups duplicate records by year, location, and comparison group, reports missing years without treating them as zero, and fits a separate scikit-learn linear regression for each group. Year is the input and annual mean value is the outcome; the slope describes historical change, not a forecast.
+See [BENCHMARK.md](BENCHMARK.md) for current results, examples, limits, and improvements. Per-question results and response times are stored in `benchmark/results.json`.
 
-The official Part 5 evaluation is a reproducible 20-scenario test of the existing agent. Run `python agent_benchmark.py --dry-run`, then `python agent_benchmark.py` to collect results. See [BENCHMARK.md](BENCHMARK.md) for scoring and limitations. The optional Streamlit checkbox checks one generated summary against 20 criteria; it is not the official benchmark.
+## Methods
 
-Human semantic review of benchmark summaries remains pending. The project walkthrough video still needs to be recorded and added to the portfolio.
+The smolagents workflow retrieves CDC records, checks coverage, and analyzes annual values. The app reports missing years without treating them as zero and fits scikit-learn linear regression separately for each comparison group. Year is the input feature; annual mean value is the outcome. The slope describes historical change, not a forecast.
+

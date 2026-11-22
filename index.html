@@ -131,22 +131,21 @@ footer p{margin:7px 0}
 </section>
 
 <section id="evaluation">
-<p class="kicker section-kicker">05 · Official benchmark</p><h2>20 scenarios tested against the AI agent</h2>
-<p class="intro">The fixed test set calls the existing Render <code>/analyze</code> workflow. The benchmark compares returned annual values and year coverage with independent calculations from the bundled CDC snapshot.</p>
+<p class="kicker section-kicker">05 · Official benchmark</p><h2>20 AI summaries evaluated across filter scenarios</h2>
+<p class="intro">Each scenario runs the existing Render agent and scores its explanation with the same 20-question checker used in Streamlit.</p>
 <div class="grid">
-<div class="scorecard"><div class="score-head"><span><strong>Usable results</strong></span><span class="score-num">18/18</span></div><div class="score-label">All valid scenarios returned usable results; both invalid-input cases were rejected as expected (2/2).</div></div>
-<div class="scorecard"><div class="score-head"><span><strong>Structured accuracy</strong></span><span class="score-num">18/18</span></div><div class="score-label">Annual values and coverage matched independent snapshot calculations.</div></div>
-<div class="scorecard"><div class="score-head"><span><strong>Summary evidence</strong></span><span class="score-num">285/360</span></div><div class="score-label">79.2% of checks passed. The filters-only baseline passed 162/360 (45%); this comparison applies only to summary evidence coverage.</div></div>
+<div class="scorecard"><div class="score-head"><span><strong>AI-summary checks</strong></span><span class="score-num">318/400</span></div><div class="track" role="img" aria-label="AI summaries passed 79.5 percent of summary checks"><div class="fill" style="width:79.5%"></div></div><div class="score-label">79.5% passed · average 15.9/20 per generated summary.</div></div>
+<div class="scorecard baseline"><div class="score-head"><span><strong>Filters-only baseline</strong></span><span class="score-num">180/400</span></div><div class="track" role="img" aria-label="Filters-only baseline passed 45 percent of summary checks"><div class="fill" style="width:45%"></div></div><div class="score-label">9/20 per scenario · 45%. It receives credit for filter-answerable checks only.</div></div>
 </div>
 <div class="stat-row">
-<div class="stat"><strong>11.405s</strong><span>Median response · p95 14.902s</span></div>
-<div class="stat"><strong>A01 · 15/20</strong><span>North Carolina vs U.S. adult depression, 2019–2023; structured values matched.</span></div>
-<div class="stat"><strong>A17 · 11/20</strong><span>Postpartum indicator had no numeric values; returned coverage matched the snapshot.</span></div>
+<div class="stat"><strong>10.757s</strong><span>Median response time · p95 12.370s</span></div>
+<div class="stat"><strong>A11 · 18/20</strong><span>Highest score: U.S. high-school indicator, 2019–2023.</span></div>
+<div class="stat"><strong>A17 · 10/20</strong><span>Lowest score: postpartum indicator, no numeric values.</span></div>
 </div>
-<img src="agent_benchmark.svg" alt="20-scenario AI-agent benchmark results compared with the filters-only evidence baseline" style="width:100%;max-width:760px;display:block;margin:1rem auto">
-<div class="card"><h3>What the results taught us</h3><p>The agent returned correct structured values and coverage for the tested scenarios, but summary evidence was less consistent when information was sparse or absent. A17 shows why a usable response can still need a clearer explanation when there are no numeric observations. Automated evidence checks do not verify semantic accuracy; human review is pending.</p>
-<h3>Next improvements</h3><ol><li>Make no-numeric responses clearly state that no annual numeric comparison or trend is available.</li><li>Human-review the flagged summary checks, distinguish true omissions from valid paraphrases, then refine the criteria and explanation guidance.</li></ol></div>
-<p class="small">Reproduce the run and inspect the <a href="BENCHMARK.md">protocol and results</a>, <a href="agent_benchmark_cases.json">fixed cases</a>, <a href="agent_benchmark_results.json">recorded responses</a>, and <a href="agent_benchmark_review.csv">review sheet</a>.</p>
+<img src="benchmark/summary.svg" alt="AI-summary check scores for all 20 scenarios, with the 9 of 20 filters-only baseline" style="width:100%;max-width:760px;display:block;margin:1rem auto">
+<div class="card"><h3>What the results taught us</h3><p>Scores ranged from 10/20 to 18/20. A11 communicated the available years and values but missed explicit wording about shared years and series count. A17 clearly described three records with no numeric estimates, but spelled counts out as words; exact-number checks did not detect them. The checker also expects trend details when a scenario has no numeric series.</p>
+<h3>Improvements</h3><ol><li>Guide summaries to state record counts as numerals and explicitly name the number of comparison series and shared years.</li><li>After human review, refine a future evaluator version to recognize number words and treat numeric-trend criteria as not applicable when no estimates exist. The current run keeps the existing scoring rules unchanged.</li></ol></div>
+<p class="small">Method, case definitions, full summaries, question-level pass/fail results, baseline, and response times are in <a href="BENCHMARK.md">the benchmark report</a>, <a href="benchmark/cases.json">the 20 filter scenarios</a>, and <a href="benchmark/results.json">the recorded run</a>.</p>
 </section>
 
 <section id="limitations">
