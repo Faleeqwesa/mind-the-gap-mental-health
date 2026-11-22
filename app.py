@@ -1,6 +1,5 @@
 import os
 import json
-import time
 import requests
 import pandas as pd
 import plotly.express as px
@@ -107,9 +106,7 @@ if st.button("Generate graph and AI summary", type="primary"):
                        demographic_categories=dcats, demographic_groups=groups, estimate_type=t)
         try:
             with st.spinner("The smolagents workflow is retrieving and checking CDC values…"):
-                started = time.perf_counter()
                 r = requests.post(f"{API}/analyze", json=payload, timeout=180); r.raise_for_status(); answer = r.json()
-                latency = time.perf_counter() - started
             d = pd.DataFrame(answer["analysis"]["summary_by_location_and_year"])
             if d.empty:
                 if (answer.get("retrieval") or {}).get("matching_rows", 0):
@@ -168,12 +165,8 @@ if st.button("Generate graph and AI summary", type="primary"):
             if run_summary_check:
                 checks = score_benchmark_summary(payload, answer, answer.get("explanation", ""))
                 passed = sum(item["pass"] for item in checks)
-                baseline = sum(item["baseline_pass"] for item in checks)
                 st.markdown("### Optional AI-summary check")
-                left, middle, right = st.columns(3)
-                left.metric("Summary checks passed", f"{passed}/20", f"{passed / 20:.0%}")
-                middle.metric("Filters-only baseline", f"{baseline}/20", f"{baseline / 20:.0%}")
-                right.metric("API response time", f"{latency:.2f}s")
+                st.info(f"This summary met **{passed} of 20 evaluation criteria**. Review each result below.")
                 with st.expander("Review all 20 questions"):
                     review = pd.DataFrame(checks)[["id", "question", "pass", "agent_answer", "expected_answer", "scoring_rule", "why"]].copy()
                     review["expected_answer"] = review["expected_answer"].map(lambda value: json.dumps(value, ensure_ascii=False))
@@ -207,4 +200,5 @@ if st.button("Generate graph and AI summary", type="primary"):
 
 with st.expander("Limitations and methods"):
     st.write("Render runs the smolagents workflow with retrieval, coverage, and analysis tools. The summary is based on selected CDC records. Linear regression describes the historical slope; it is not a forecast. Missing values are not zero, and population indicators do not explain causes or provide medical advice.")
+
 
