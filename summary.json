@@ -1,9 +1,0 @@
-{
-  "cases": 20,
-  "pipeline_valid_cases": 20,
-  "pipeline_valid_rate": 1.0,
-  "baseline_exact_match_cases": 7,
-  "baseline_exact_match_rate": 0.35,
-  "metric": "Exact annual means and missing-year set against direct source-row calculation",
-  "limitation": "Tests deterministic retrieval and coverage only; not LLM prose, user usefulness, or clinical validity."
-}
