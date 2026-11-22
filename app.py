@@ -198,7 +198,9 @@ def options():
 try:
     o = options()
 except Exception as e:
-    st.error(f"Could not reach the Render data service ({type(e).__name__}). Please refresh in a moment.")
+    st.error("The data service is unavailable. Refresh in a moment and try again.")
+    with st.expander("Technical details"):
+        st.caption(type(e).__name__)
     st.stop()
 
 st.subheader("1. Choose the question and values")
@@ -231,6 +233,8 @@ div[data-testid="stVerticalBlockBorderWrapper"]{border-color:#29465d!important;b
 [data-testid="stMetricLabel"] p{color:#b8cde0!important}[data-testid="stMetricValue"]{color:#d8ebfa!important}
 [data-testid="stDataFrame"]{border:1px solid #29465d;border-radius:10px}
 [data-testid="stExpander"]{border:1px solid #29465d!important;border-radius:10px!important;background:#101b27}
+div[data-testid="stAlert"]{background:#132a3d!important;border:1px solid #355a77!important;color:#e2eef6!important;border-radius:10px}
+div[data-testid="stAlert"] p{color:#e2eef6!important}
 :focus-visible{outline:3px solid #8ac2e8!important;outline-offset:2px}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
 </style>""",unsafe_allow_html=True)
