@@ -71,7 +71,7 @@ footer p{margin:7px 0}
 <body>
 <header>
 <nav aria-label="Main navigation">
-<a href="#story">Project</a><a href="#data">CDC data</a><a href="#how">How it works</a><a href="#app">Try the app</a><a href="#evaluation">Evaluation</a><a href="#limitations">Limitations</a><a href="#walkthrough">Walkthrough</a>
+<a href="#story">Project</a><a href="#data">CDC data</a><a href="#how">How it works</a><a href="#app">Try the app</a><a href="#evaluation">Benchmark</a><a href="#limitations">Limitations</a><a href="#walkthrough">Walkthrough</a>
 </nav>
 <div class="hero">
 <div class="hero-copy">
@@ -82,7 +82,7 @@ footer p{margin:7px 0}
 <a class="button" href="#app">Explore the application</a>
 <a class="button secondary" href="https://github.com/Faleeqwesa/mind-the-gap-mental-health">View source code</a>
 </div>
-<div class="hero-card"><strong>17 / 20</strong><span>checks passed in the latest recorded AI-summary result<br>One generated answer · not a 20-scenario test</span></div>
+
 </div>
 </header>
 <main>
@@ -106,23 +106,23 @@ footer p{margin:7px 0}
 
 <section id="how">
 <p class="kicker section-kicker">03 · System and method</p><h2>How it works</h2>
-<p class="intro">A user chooses an indicator and estimate, then filters years, locations, and a demographic group—or compares by another available factor. The existing Render service returns structured results; the Streamlit app presents the graph, trend slope, and generated explanation.</p>
-<div class="workflow" role="img" aria-label="User filters CDC indicators, the smolagents workflow retrieves, checks, and analyzes records, then the application shows a graph, trend slope, and AI explanation.">
-<div class="step"><b>1 · Select filters</b><span>Question, estimate, years, location, and population.</span></div>
-<div class="step"><b>2 · Retrieve</b><span>The smolagents workflow fetches the matching CDC records.</span></div>
-<div class="step"><b>3 · Check and analyze</b><span>Tools check value and year coverage, then calculate annual means.</span></div>
-<div class="step"><b>4 · Review results</b><span>The app shows a bar graph, regression slope, and LLM explanation.</span></div>
+<p class="intro">Choose a CDC question, year range, locations, and population or comparison factor. The existing smolagents workflow retrieves and checks CDC records, analyzes annual values, and returns structured results for the app.</p>
+<div class="workflow" role="img" aria-label="User selects filters; the smolagents agent retrieves, checks and analyzes CDC records; the language model explains results; the application shows a graph, coverage, and regression.">
+<div class="step"><b>1 · Select filters</b><span>Question, years, places, and demographic or comparison group.</span></div>
+<div class="step"><b>2 · Agent analyzes data</b><span>Existing tools retrieve records, check coverage, and calculate annual values.</span></div>
+<div class="step"><b>3 · Generate explanation</b><span>The language model summarizes the structured result.</span></div>
+<div class="step"><b>4 · Review</b><span>See the graph, missing-year coverage, summary, and historical slope.</span></div>
 </div>
 <div class="grid">
-<div class="card"><h3>Agent + language model</h3><p>The smolagents workflow calls the implemented retrieval, data-quality, and analysis tools. The LLM explains the structured results in plain language. It is instructed not to invent values, treat missing data as zero, make causal claims, diagnose, or recommend treatment. If no rows match, the app asks the user to broaden the filters; if the service fails, it shows an error and retry guidance.</p></div>
-<div class="card"><h3>Traditional ML: linear regression</h3><p>For each plotted comparison group, scikit-learn fits <em>annual mean value</em> against <em>year</em> using the selected observed points. The slope reports the fitted change per year—in percentage points for percentage measures or days for the unhealthy-days measure. Positive and negative values describe an upward or downward historical trend; they are not forecasts.</p></div>
-<div class="card"><h3>Two interaction decisions</h3><p>The app sets the unit from the selected question so percentage and days measures are not mixed. It also keeps “Compare by year” available only for a one-year selection, while allowing place or demographic comparisons over a range.</p></div>
+<div class="card"><h3>Traditional ML</h3><p>For each comparison group, scikit-learn linear regression uses year as the input and annual mean value as the outcome. Its slope describes historical direction, not a forecast.</p></div>
+<div class="card"><h3>Interaction decisions</h3><p>The app sets the unit from the question. “Compare by year” appears only when one year is selected; multi-year selections support comparisons by location or demographic factors.</p></div>
+<div class="card"><h3>Guardrails and feedback</h3><p>The summary is instructed to avoid invented values, causal claims, diagnosis, or treatment advice. Empty results and service errors receive clear messages and recovery guidance.</p></div>
 </div>
 </section>
 
 <section id="app">
 <p class="kicker section-kicker">04 · Try the application</p><h2>Explore Mind the Gap</h2>
-<p class="intro">Choose a question and estimate, select years and a comparison group, then generate the graph and summary. Turn on the optional summary benchmark before running if you also want to inspect its 20 checks.</p>
+<p class="intro">Choose a question and estimate, select years and a comparison group, then generate the graph and summary. Turn on the optional summary quality check to inspect its 20 criteria.</p>
 <div class="frame-wrap">
 <div class="frame-top"><span><span class="dots">● ● ●</span> &nbsp; Mind the Gap · Interactive explorer</span><a href="https://mind-the-gap-mental-health.streamlit.app/" target="_blank" rel="noopener" style="color:#e8f3fa">Open separately ↗</a></div>
 <iframe title="Mind the Gap interactive CDC mental-health explorer" src="https://mind-the-gap-mental-health.streamlit.app/?embed=true" loading="lazy" allow="clipboard-read; clipboard-write"></iframe>
@@ -131,31 +131,21 @@ footer p{margin:7px 0}
 </section>
 
 <section id="evaluation">
-<p class="kicker section-kicker">05 · AI-summary evaluation</p><h2>How well did the summary communicate the result?</h2>
-<p class="intro">The latest recorded result scored one generated answer against 20 deterministic checks built from its selected filters and structured API response. The checks cover selected question, unit, estimate, years and population; record counts; missingness and coverage; and annual values and trend direction.</p>
+<p class="kicker section-kicker">05 · Official benchmark</p><h2>20 scenarios against the live AI agent</h2>
+<p class="intro">The fixed benchmark calls the existing Render <code>/analyze</code> workflow and compares structured annual values and coverage with independent calculations from the bundled CDC snapshot.</p>
 <div class="grid">
-<div class="scorecard">
-<div class="score-head"><span><strong>Generated summary</strong></span><span class="score-num">17/20</span></div>
-<div class="track" role="img" aria-label="Generated summary passed 85 percent of checks"><div class="fill" style="width:85%"></div></div>
-<div class="score-label">85% of checks detected the expected evidence in this recorded answer.</div>
-</div>
-<div class="scorecard baseline">
-<div class="score-head"><span><strong>Filters-only baseline</strong></span><span class="score-num">9/20</span></div>
-<div class="track" role="img" aria-label="Filters-only baseline passed 45 percent of checks"><div class="fill" style="width:45%"></div></div>
-<div class="score-label">45% · it sees submitted controls, but has no retrieved CDC evidence for the other checks.</div>
-</div>
+<div class="scorecard"><div class="score-head"><span><strong>Usable analysis results</strong></span><span class="score-num">18/18</span></div><div class="score-label">All valid analysis scenarios returned usable results; both invalid-input cases were rejected as expected (2/2).</div></div>
+<div class="scorecard"><div class="score-head"><span><strong>Structured snapshot matches</strong></span><span class="score-num">18/18</span></div><div class="score-label">Annual values and coverage matched independent calculations from the included snapshot.</div></div>
+<div class="scorecard"><div class="score-head"><span><strong>Summary evidence coverage</strong></span><span class="score-num">285/360</span></div><div class="score-label">79.2%, versus 162/360 (45%) for the comparable filters-only baseline.</div></div>
 </div>
 <div class="stat-row">
-<div class="stat"><strong>19.45 seconds</strong><span>Recorded API response time for that request—not an average or accuracy score.</span></div>
-<div class="stat"><strong>20 checks</strong><span>Applied to the one generated explanation; they are not 20 separate agent scenarios.</span></div>
-<div class="stat"><strong>No extra call</strong><span>The benchmark reuses the response from the graph-and-summary request; no LLM judge is used.</span></div>
+<div class="stat"><strong>11.405s</strong><span>Median response time · p95 14.902s</span></div>
+<div class="stat"><strong>A01 · 15/20</strong><span>Successful structured comparison example</span></div>
+<div class="stat"><strong>A17 · 11/20</strong><span>Lowest summary evidence score; no numeric values</span></div>
 </div>
-<div class="grid">
-<div class="card"><h3>What the score means</h3><p>Three checks did not detect their required evidence in the recorded summary. A deterministic text check can miss a valid paraphrase, so a failed check is not by itself proof that the underlying value is wrong. In the app, each row displays the question, pass/fail, full answer, expected evidence, rule, and rationale.</p></div>
-<div class="card"><h3>Evaluation limits and next steps</h3><p>Expected evidence is calculated from the same structured API response, so this does not independently verify the CDC source or establish clinical usefulness. To meet the rubric’s 20 representative-case requirement more fully, next steps are to run a fixed set of distinct filter combinations—including sparse and empty cases—and compare against independently reviewed expected values; then review check misses and passes with a human to improve the criteria.</p></div>
-</div>
-<details><summary>Scoring details</summary><p>Checks require exact selected names or expected values with context where specified. The baseline receives credit for the nine checks answerable from the controls alone (9/20); the other eleven require retrieved evidence. This is a coverage measure of the returned explanation, not a separate test of the agent’s tool choices or a source-data accuracy score.</p></details>
-<p class="small">Inspect the <a href="https://github.com/Faleeqwesa/mind-the-gap-mental-health/blob/main/benchmark_questions.json">20 check definitions</a> and <a href="https://github.com/Faleeqwesa/mind-the-gap-mental-health/blob/main/app.py">app scoring and results table</a>.</p>
+<img src="agent_benchmark.svg" alt="Summary chart of the 20-case AI-agent benchmark" style="width:100%;max-width:760px;display:block;margin:1rem auto">
+<div class="card"><h3>What to improve</h3><p>For valid cases with no numeric observations, make the explanation explicitly say that no annual numeric comparison or trend is available. Human-review flagged summary checks to separate true omissions from valid paraphrases; semantic review is still pending.</p></div>
+<p class="small">Run and inspect the <a href="BENCHMARK.md">benchmark protocol and results</a>, <a href="agent_benchmark_cases.json">fixed cases</a>, <a href="agent_benchmark_results.json">recorded responses</a>, and <a href="agent_benchmark_review.csv">review sheet</a>. Evidence checks are not human-rated semantic accuracy. Baseline applies only to summary evidence coverage.</p>
 </section>
 
 <section id="limitations">
