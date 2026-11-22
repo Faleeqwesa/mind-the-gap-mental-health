@@ -99,7 +99,7 @@ footer p{margin:7px 0}
 
 <section id="data">
 <p class="kicker section-kicker">02 · The data</p><h2>CDC U.S. Chronic Disease Indicators</h2>
-<p>The app uses the Mental Health topic subset of the <a href="https://data.cdc.gov/Chronic-Disease-Indicators/U-S-Chronic-Disease-Indicators/hksd-2xuw/about_data" target="_blank" rel="noopener">CDC U.S. Chronic Disease Indicators dataset</a>, covering 2019–2023 in this project. Its questions include adult depression, frequent mental distress, postpartum depressive symptoms, poor mental health among high-school students, and average mentally unhealthy days among adults.</p>
+<p>The project continues its midterm CDC dataset and expands the earlier adult-depression focus to multiple mental-health questions. The app uses the Mental Health topic subset of the <a href="https://data.cdc.gov/Chronic-Disease-Indicators/U-S-Chronic-Disease-Indicators/hksd-2xuw/about_data" target="_blank" rel="noopener">CDC U.S. Chronic Disease Indicators dataset</a>, covering 2019–2023 in this project. Its questions include adult depression, frequent mental distress, postpartum depressive symptoms, poor mental health among high-school students, and average mentally unhealthy days among adults.</p>
 <div class="callout"><strong>Coverage is part of the result.</strong> Measures use percentages except the average mentally unhealthy days question. Availability varies by selected question, place, and population. Missing values are not zero, and differences in coverage can limit direct comparisons.</div>
 <p class="small">The midterm exploration also showed why these caveats matter: some indicators and demographic groups had less complete coverage than others. Those earlier observations are project background, not a substitute for the current filters and results.</p>
 </section>
@@ -114,7 +114,7 @@ footer p{margin:7px 0}
 <div class="step"><b>4 · Review</b><span>See the graph, missing-year coverage, summary, and historical slope.</span></div>
 </div>
 <div class="grid">
-<div class="card"><h3>Traditional ML</h3><p>For each comparison group, scikit-learn linear regression uses year as the input and annual mean value as the outcome. Its slope describes historical direction, not a forecast.</p></div>
+<div class="card"><h3>Traditional ML</h3><p>Repeated records are grouped into annual means for each comparison group. This simple, interpretable trend method uses year as the input and annual mean value as the outcome. Scikit-learn fits each group separately; slope describes historical direction, not a forecast.</p></div>
 <div class="card"><h3>Interaction decisions</h3><p>The app sets the unit from the question. “Compare by year” appears only when one year is selected; multi-year selections support comparisons by location or demographic factors.</p></div>
 <div class="card"><h3>Guardrails and feedback</h3><p>The summary is instructed to avoid invented values, causal claims, diagnosis, or treatment advice. Empty results and service errors receive clear messages and recovery guidance.</p></div>
 </div>
