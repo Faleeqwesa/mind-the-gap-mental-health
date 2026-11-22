@@ -342,7 +342,23 @@ if st.button("Generate graph and AI summary", type="primary"):
                 else:
                     st.info("The service did not return year-coverage details for this selection.")
 
-                st.markdown("### 4. Linear trend analysis")
+                if run_summary_benchmark:
+                    case_rows = score_benchmark_summary(benchmark_filters, answer, answer.get("explanation", ""))
+                    agent_passes = sum(row["pass"] for row in case_rows)
+                    baseline_passes = sum(row["baseline_pass"] for row in case_rows)
+                    st.markdown("### 4. AI-summary benchmark")
+                    st.caption("These checks evaluate the summary shown above and reuse this request.")
+                    metric_a, metric_b, metric_c = st.columns(3)
+                    metric_a.metric("Summary checks passed", f"{agent_passes}/20", f"{agent_passes / 20:.0%}")
+                    metric_b.metric("Filters-only baseline", f"{baseline_passes}/20", f"{baseline_passes / 20:.0%}")
+                    metric_c.metric("API response time", f"{benchmark_latency:.2f}s")
+                    with st.expander("Review all 20 evaluation checks"):
+                        st.dataframe(
+                            pd.DataFrame(case_rows)[["id", "question", "pass", "agent_answer", "expected_answer", "scoring_rule", "why"]],
+                            use_container_width=True, hide_index=True
+                        )
+
+                st.markdown("### 5. Linear trend analysis")
                 st.caption("Linear regression describes the fitted change across observed years. A positive slope points upward; a negative slope points downward. This is a descriptive trend, not a prediction.")
                 slopes = {}
                 for name, group in d.groupby("Compare"):
@@ -360,21 +376,6 @@ if st.button("Generate graph and AI summary", type="primary"):
                 else:
                     st.info("A linear trend needs observed values from more than one year.")
 
-                if run_summary_benchmark:
-                    case_rows = score_benchmark_summary(benchmark_filters, answer, answer.get("explanation", ""))
-                    agent_passes = sum(row["pass"] for row in case_rows)
-                    baseline_passes = sum(row["baseline_pass"] for row in case_rows)
-                    st.markdown("### 5. AI-summary benchmark")
-                    st.caption("These checks evaluate the summary shown above and reuse this request.")
-                    metric_a, metric_b, metric_c = st.columns(3)
-                    metric_a.metric("Summary checks passed", f"{agent_passes}/20", f"{agent_passes / 20:.0%}")
-                    metric_b.metric("Filters-only baseline", f"{baseline_passes}/20", f"{baseline_passes / 20:.0%}")
-                    metric_c.metric("API response time", f"{benchmark_latency:.2f}s")
-                    with st.expander("Review all 20 evaluation checks"):
-                        st.dataframe(
-                            pd.DataFrame(case_rows)[["id", "question", "pass", "agent_answer", "expected_answer", "scoring_rule", "why"]],
-                            use_container_width=True, hide_index=True
-                        )
         except Exception as e:
             st.error("This comparison could not be completed. Try again or adjust the selected filters.")
             with st.expander("Technical details"):
