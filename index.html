@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -120,12 +119,6 @@ h3 {
   margin: 8px 8px 0 0;
 }
 
-.button.secondary {
-  background: transparent;
-  color: #fff;
-  border: 1px solid #a9c6dc;
-}
-
 main, footer {
   max-width: 1080px;
   margin: auto;
@@ -203,19 +196,25 @@ section {
 }
 
 .frame-top {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
   color: #e8f3fa;
   padding: 4px 8px 12px;
   font-size: 14px;
 }
 
-iframe {
+.app-frame {
   display: block;
   width: 100%;
   height: 1400px;
   border: 1px solid #b9cede;
+  border-radius: 10px;
+  background: #0b1723;
+}
+
+.video-frame {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
   border-radius: 10px;
   background: #0b1723;
 }
@@ -225,24 +224,6 @@ iframe {
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 12px;
   margin: 17px 0;
-}
-
-.stat {
-  background: #eef5fa;
-  border: 1px solid #d1e1ec;
-  border-radius: 10px;
-  padding: 13px;
-}
-
-.stat strong {
-  display: block;
-  font-size: 22px;
-  color: var(--navy);
-}
-
-.stat span, .small {
-  font-size: 14px;
-  color: var(--muted);
 }
 
 .score-head {
@@ -273,6 +254,11 @@ iframe {
 
 .baseline .fill { background: #90adc2; }
 
+.small {
+  font-size: 14px;
+  color: var(--muted);
+}
+
 ul, ol { padding-left: 22px; }
 li { margin: 7px 0; }
 
@@ -289,7 +275,7 @@ footer {
   .workflow { grid-template-columns: 1fr; }
   main, footer { padding: 13px; }
   .frame-top { flex-wrap: wrap; }
-  iframe { height: 1200px; }
+  .app-frame { height: 1200px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -302,20 +288,20 @@ footer {
 
 <header>
   <nav aria-label="Main navigation">
-    <a href="#project-overview">Project Overview</a>
+    <a href="#project-overview">Overview</a>
     <a href="#data">Data</a>
     <a href="#system">System Design</a>
     <a href="#app">Application</a>
     <a href="#benchmark">Benchmark</a>
-    <a href="#limits">Limitations</a>
     <a href="#walkthrough">Walkthrough</a>
+    <a href="#limits">Limitations</a>
   </nav>
 
   <div class="hero">
     <p class="kicker">DESIGNTK 530 · Fall 2026 · CDC Indicators</p>
     <h1>Mind the Gap</h1>
     <p class="lead">Explore how population-level mental-health indicators vary by year, place, and population.</p>
-    <p>Choose filters, compare the results, and see where CDC data is missing.</p>
+    <p>Compare CDC data, explore trends, and identify gaps in available information.</p>
   </div>
 </header>
 
@@ -326,29 +312,33 @@ footer {
     <h2>A clearer view of mental-health data</h2>
 
     <p class="intro">
-      CDC mental-health data covers different years, locations, questions, and populations. However, not every group has data available for every year. Mind the Gap brings these data into one interactive application so users can explore comparisons and identify patterns or gaps.
+      Mental-health data can be difficult to compare because information varies
+      across years, locations, and populations, and some groups have missing data.
+      Mind the Gap brings CDC data into one interactive application where users
+      can explore trends, compare groups, and identify gaps in available information.
     </p>
 
     <div class="grid">
       <div class="card">
-        <h3>Project question</h3>
-        <p>How do mental-health indicators vary across years, locations, and populations?</p>
+        <h3>What it does</h3>
+        <p>Allows users to filter CDC mental-health data, compare results, view trends, and get AI-generated summaries.</p>
       </div>
 
       <div class="card">
-        <h3>Intended users</h3>
-        <p>People interested in public health, including researchers, healthcare organizations, and individuals exploring mental-health data.</p>
+        <h3>Who it's for</h3>
+        <p>Public health students, researchers, and healthcare organizations exploring population-level mental-health trends.</p>
       </div>
 
       <div class="card">
-        <h3>Goal</h3>
-        <p>Make it easier to compare CDC data and identify differences or gaps that may need further research.</p>
+        <h3>Purpose</h3>
+        <p>Make it easier to understand mental-health data and identify differences or gaps that may need further research.</p>
       </div>
     </div>
 
     <div class="callout">
       <strong>From midterm to final project.</strong>
-      My midterm project explored mental-health trends in CDC data. Mind the Gap builds on that work by turning the data into an interactive application where users can choose their own filters.
+      My midterm explored mental-health trends in CDC data. Mind the Gap builds on
+      that work by turning the data into an interactive application.
       <a href="https://faleeqwesa.github.io/530_Midtermproject_FatimaAleem/" target="_blank" rel="noopener">View my midterm project</a>.
     </div>
   </section>
@@ -375,75 +365,93 @@ footer {
       </div>
 
       <div class="card">
-        <h3>Missing data</h3>
+        <h3>Data limitations</h3>
         <p>Not every question, location, or population has data for every year. Missing values are excluded from calculations rather than treated as zero.</p>
       </div>
 
       <div class="card">
         <h3>Comparisons</h3>
-        <p>Questions can use different units and estimate types, so the application keeps those measures separate when users compare results.</p>
+        <p>Questions can use different units and estimate types, so the application keeps those measures separate.</p>
       </div>
     </div>
   </section>
 
   <section id="system">
     <p class="kicker section-kicker">03 · System Design</p>
-    <h2>How the application works</h2>
+    <h2>How it works</h2>
 
     <p class="intro">
-      Users select filters in Streamlit. The application retrieves and analyzes the matching CDC data, displays the results, and uses AI to explain the findings.
+      Users select filters, and the application retrieves and analyzes the matching
+      CDC data before generating an explanation of the results.
     </p>
 
     <div class="workflow" aria-label="Application workflow">
       <div class="step">
         <b>1 · Select filters</b>
-        <span>Choose the question, estimate type, years, locations, and population groups.</span>
+        <span>Choose questions, years, locations, and population groups.</span>
       </div>
 
       <div class="step">
         <b>2 · Retrieve data</b>
-        <span>The agent retrieves CDC records that match the selected filters.</span>
+        <span>The agent retrieves records matching the filters.</span>
       </div>
 
       <div class="step">
-        <b>3 · Check and analyze</b>
-        <span>The tools check data coverage and calculate annual results.</span>
+        <b>3 · Analyze data</b>
+        <span>Tools check data coverage and analyze the results.</span>
       </div>
 
       <div class="step">
-        <b>4 · Explain results</b>
-        <span>The AI generates a summary using the retrieved data and analysis.</span>
+        <b>4 · Generate summary</b>
+        <span>The LLM explains the results using the analysis.</span>
       </div>
     </div>
 
+    <p>
+      Users provide the filters as input and receive visualizations and an
+      AI-generated summary. This helps them decide which trends or population
+      groups they want to explore further.
+    </p>
+
     <div class="grid">
       <div class="card">
-        <h3>AI Agent</h3>
-        <p>The agent uses three tools to retrieve the data, check data quality, and analyze the results. A separate OpenAI request uses those results to write the summary.</p>
+        <h3>AI Agent and LLM</h3>
+        <p>The agent follows a multi-step workflow using three tools to retrieve CDC data, check data quality and coverage, and analyze results. A separate OpenAI request uses the results to generate a summary in natural language.</p>
       </div>
 
       <div class="card">
-        <h3>Linear regression</h3>
-        <p>The application uses scikit-learn linear regression to show historical trends when enough yearly data is available. It does not establish causes or predict future outcomes.</p>
+        <h3>Linear Regression</h3>
+        <p>The application uses scikit-learn linear regression to analyze historical yearly trends when enough data is available. Yearly values are used to fit the trend. This helps users understand the direction of a trend but does not establish causes or predict future outcomes.</p>
       </div>
 
       <div class="card">
-        <h3>Data checks</h3>
-        <p>Missing values and unavailable years are shown so users can see where the data is limited. The AI is instructed not to invent values or make causal claims.</p>
+        <h3>Data Checks</h3>
+        <p>Missing values and unavailable years are shown so users can see where data is limited. The AI is instructed not to invent values or make causal claims.</p>
       </div>
     </div>
   </section>
 
   <section id="app">
     <p class="kicker section-kicker">04 · Application</p>
-    <h2>Explore the filters, graph, and summary</h2>
+    <h2>Try Mind the Gap</h2>
 
     <p class="intro">
-      Select a mental-health question, estimate type, year range, locations, and demographic groups. The application displays the filtered results, data coverage, and an AI-generated summary.
+      Select a mental-health question, estimate type, year range, locations, and
+      demographic groups. The application displays the matching results,
+      visualizations, and an AI-generated summary.
     </p>
 
+    <div class="callout">
+      <strong>Example interaction:</strong>
+      Select a mental-health question, choose a year range and locations, and
+      compare population groups. The application displays the matching data
+      and explains the results.
+    </div>
+
     <p>
-      There is also an optional review that checks one generated summary against 20 evaluation questions. It displays each question, the AI's answer, the expected answer, and whether the response passed or failed.
+      The application also includes an optional review that checks a generated
+      summary against 20 evaluation questions. It displays the AI's answer,
+      expected answer, and whether each response passed or failed.
     </p>
 
     <p>
@@ -452,17 +460,18 @@ footer {
 
     <div class="frame-wrap">
       <div class="frame-top">
-        <span>Mind the Gap · Interactive explorer</span>
+        Mind the Gap · Interactive explorer
       </div>
 
       <iframe
+        class="app-frame"
         title="Mind the Gap CDC mental-health explorer"
         src="https://mind-the-gap-mental-health.streamlit.app/?embed=true"
         loading="lazy">
       </iframe>
     </div>
 
-    <p class="small">If the embedded application does not load, use the link above to open it separately.</p>
+    <p class="small">If the application does not load here, use the link above to open it separately.</p>
   </section>
 
   <section id="benchmark">
@@ -470,11 +479,16 @@ footer {
     <h2>Testing the AI summary</h2>
 
     <p class="intro">
-      I wanted to see how well the AI Agent summarized the CDC data and whether it included the information users need to understand the results.
+      I tested how well the AI Agent summarized CDC data and whether it included
+      the information users need to understand the results.
     </p>
 
     <p>
-      I tested 20 different filter scenarios. Each summary was checked against the same 20 questions, resulting in 400 checks. The questions evaluate whether the summary correctly explains the selected data, years, locations, comparisons, and missing information.
+      The benchmark uses 20 filter scenarios, with 20 evaluation questions for
+      each scenario, for a total of 400 checks. The scenarios cover different
+      filter combinations and data availability situations. Each check evaluates
+      whether the summary accurately explains the selected data, comparisons,
+      and missing information without making unsupported claims.
     </p>
 
     <div class="grid">
@@ -502,47 +516,83 @@ footer {
     </div>
 
     <p>
-      The AI Agent passed more checks than the filters-only baseline. The review also showed that some summaries could be clearer about the number of comparison groups and which years were shared across them.
+      The filters-only baseline provides a comparison without the AI Agent's
+      additional analysis and summary generation. The AI Agent passed more
+      checks, but the results also showed areas where summaries could improve.
+    </p>
+
+    <h3>What I found</h3>
+    <p>
+      Some summaries did not clearly explain how many groups were being compared
+      or which years they had in common. Scenarios without numeric values also
+      showed a limitation in the scoring approach.
     </p>
 
     <h3>What I would improve</h3>
     <ul>
-      <li>Make summaries clearer about how many groups are being compared and which years they have in common.</li>
-      <li>Adjust the scoring for scenarios with no numeric values, so a summary is not marked down for leaving out a numerical trend that cannot be calculated.</li>
+      <li>Make summaries clearer about comparison groups and shared years.</li>
+      <li>Adjust scoring when no numeric values are available, so summaries are not marked down for missing trends that cannot be calculated.</li>
     </ul>
 
     <p>
-      The benchmark uses rule-based scoring, not an LLM judge. The full test cases, results, and instructions are available in the
+      The benchmark uses rule-based scoring, not an LLM judge. The test cases,
+      scoring code, and results are available in the
       <a href="https://github.com/Faleeqwesa/mind-the-gap-mental-health" target="_blank" rel="noopener">project repository</a>.
     </p>
 
     <p class="small">
-      To reproduce the benchmark, install the project requirements and run <code>python benchmark/run.py</code>. The repository includes the benchmark cases and results.
+      To reproduce the benchmark, install dependencies using
+      <code>python -m pip install -r requirements.txt</code>
+      and run <code>python benchmark/run.py</code>.
     </p>
   </section>
 
+  <section id="walkthrough">
+    <p class="kicker section-kicker">06 · Project Walkthrough</p>
+    <h2>See Mind the Gap in action</h2>
+
+    <p class="intro">
+      This walkthrough shows the user problem, how to select filters,
+      explore results, and review the AI-generated summary.
+    </p>
+
+    <div class="frame-wrap">
+      <div class="frame-top">
+        Mind the Gap · Project walkthrough
+      </div>
+
+      <iframe
+        class="video-frame"
+        title="Mind the Gap project walkthrough"
+        src="PASTE_YOUR_VIDEO_EMBED_URL"
+        loading="lazy"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </section>
+
   <section id="limits">
-    <p class="kicker section-kicker">06 · Limitations &amp; Resources</p>
+    <p class="kicker section-kicker">07 · Limitations &amp; Resources</p>
     <h2>What to keep in mind</h2>
 
     <ul>
       <li>Data availability varies by question, location, year, and population.</li>
       <li>These are population-level estimates, not information about an individual's mental health.</li>
-      <li>Linear regression describes historical data; it does not establish causation or reliably predict future outcomes.</li>
+      <li>Linear regression describes historical data; it does not establish causation.</li>
       <li>AI summaries can miss details or misstate results, so users should review the data alongside the explanation.</li>
     </ul>
 
-    <h3>Design decisions</h3>
+    <h3>Design Decisions</h3>
 
     <div class="grid">
       <div class="card">
-        <h3>Design Decison 1: Filter Data</h3>
-        <p>Users select the question and estimate type before comparing locations or populations.</p>
+        <h3>Filter-Based Exploration</h3>
+        <p>I used filters instead of a general chatbot so users could choose the specific questions, years, locations, and populations they wanted to compare.</p>
       </div>
 
       <div class="card">
-        <h3>Design Decision 2: Show the data gaps</h3>
-        <p>Missing values and unavailable years are displayed instead of being treated as zero.</p>
+        <h3>Showing Missing Data</h3>
+        <p>I chose to display missing values and unavailable years instead of treating them as zero, so users can better understand the limits of the data.</p>
       </div>
     </div>
 
@@ -553,28 +603,7 @@ footer {
       <a href="https://data.cdc.gov/Chronic-Disease-Indicators/U-S-Chronic-Disease-Indicators/hksd-2xuw/about_data" target="_blank" rel="noopener">CDC dataset</a>
     </p>
   </section>
-<section id="walkthrough">
-  <p class="kicker section-kicker">06 · Project Walkthrough</p>
-  <h2>See Mind the Gap in action</h2>
 
-  <p class="intro">
-    This walkthrough shows how to use the application, select filters,
-    explore the results, and review the AI-generated summary.
-  </p>
-
-  <div class="frame-wrap">
-    <div class="frame-top">
-      <span>Mind the Gap · Project walkthrough</span>
-    </div>
-
-    <iframe
-      title="Mind the Gap project walkthrough"
-      src="PASTE_YOUR_VIDEO_EMBED_URL"
-      loading="lazy"
-      allowfullscreen>
-    </iframe>
-  </div>
-</section>
 </main>
 
 <footer>
@@ -584,4 +613,3 @@ footer {
 
 </body>
 </html>
-
