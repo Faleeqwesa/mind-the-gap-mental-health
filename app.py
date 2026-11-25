@@ -92,8 +92,8 @@ else:
     dcats = [c]; opts = o["groups_by_category"].get(c, [])
     groups = st.multiselect("Groups to compare", opts, default=["Overall"] if compare == "Year" and "Overall" in opts else opts)
 
-st.subheader("Optional AI-summary check")
-run_summary_check = st.checkbox("Review this AI summary with the 20 evaluation questions")
+st.subheader("Optional Summary check")
+run_summary_check = st.checkbox("Review this summary with the 20 evaluation questions")
 st.caption("This optional check reuses the existing graph-and-summary response.")
 
 st.subheader("3. Generate results")
@@ -105,7 +105,7 @@ if st.button("Generate graph and AI summary", type="primary"):
         payload = dict(data_unit=u, question=q, start_year=years[0], end_year=years[1], locations=locs,
                        demographic_categories=dcats, demographic_groups=groups, estimate_type=t)
         try:
-            with st.spinner("The smolagents workflow is retrieving and checking CDC values…"):
+            with st.spinner("Mind the Gap is retrieving and checking CDC Data…"):
                 r = requests.post(f"{API}/analyze", json=payload, timeout=180); r.raise_for_status(); answer = r.json()
             d = pd.DataFrame(answer["analysis"]["summary_by_location_and_year"])
             if d.empty:
@@ -138,7 +138,7 @@ if st.button("Generate graph and AI summary", type="primary"):
                 st.plotly_chart(fig, use_container_width=True)
 
             with st.container(border=True):
-                st.markdown("### 2. AI-generated summary")
+                st.markdown("### 2. Data Summary")
                 st.markdown(answer.get("explanation", "The agent returned data without a text explanation."))
 
             st.markdown("### 3. Data coverage")
@@ -165,7 +165,7 @@ if st.button("Generate graph and AI summary", type="primary"):
             if run_summary_check:
                 checks = score_benchmark_summary(payload, answer, answer.get("explanation", ""))
                 passed = sum(item["pass"] for item in checks)
-                st.markdown("### Optional AI-summary check")
+                st.markdown("###Summary check")
                 st.info(f"This summary met **{passed} of 20 evaluation criteria**. Review each result below.")
                 with st.expander("Review all 20 questions"):
                     review = pd.DataFrame(checks)[["id", "question", "pass", "agent_answer", "expected_answer", "scoring_rule", "why"]].copy()
@@ -194,7 +194,7 @@ if st.button("Generate graph and AI summary", type="primary"):
                     st.info("A linear trend needs observed values from more than one year.")
 
         except Exception as e:
-            st.error("This comparison could not be completed. Try again or adjust the selected filters.")
+            st.error("This comparison is not possible. Try again or adjust the selected filters.")
             with st.expander("Technical details"):
                 st.caption(type(e).__name__)
 
