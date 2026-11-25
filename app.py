@@ -92,13 +92,13 @@ else:
     dcats = [c]; opts = o["groups_by_category"].get(c, [])
     groups = st.multiselect("Groups to compare", opts, default=["Overall"] if compare == "Year" and "Overall" in opts else opts)
 
-st.subheader("Optional Summary check")
+st.subheader("Benchmarking check")
 run_summary_check = st.checkbox("Review this summary with the 20 evaluation questions")
 st.caption("This optional check reuses the existing graph-and-summary response.")
 
 st.subheader("3. Generate results")
 
-if st.button("Generate graph and AI summary", type="primary"):
+if st.button("Generate graph and Summary", type="primary"):
     if not locs or not groups:
         st.warning("Select at least one location and group.")
     else:
@@ -165,7 +165,7 @@ if st.button("Generate graph and AI summary", type="primary"):
             if run_summary_check:
                 checks = score_benchmark_summary(payload, answer, answer.get("explanation", ""))
                 passed = sum(item["pass"] for item in checks)
-                st.markdown("###Summary check")
+                st.markdown("Benchmarking check")
                 st.info(f"This summary met **{passed} of 20 evaluation criteria**. Review each result below.")
                 with st.expander("Review all 20 questions"):
                     review = pd.DataFrame(checks)[["id", "question", "pass", "agent_answer", "expected_answer", "scoring_rule", "why"]].copy()
