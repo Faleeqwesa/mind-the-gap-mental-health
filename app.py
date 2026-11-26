@@ -194,7 +194,7 @@ if st.button("Generate graph and Summary", type="primary"):
                     st.info("A linear trend needs observed values from more than one year.")
 
         except Exception as e:
-            st.error("This comparison is not possible. Try again or adjust the selected filters.")
+            st.error("This comparison is not possible, due to lack of available data. Try again or adjust the selected filters.")
             with st.expander("Technical details"):
                 st.caption(type(e).__name__)
 
