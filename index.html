@@ -301,7 +301,7 @@ footer {
     <p class="kicker">DESIGNTK 530 · Fall 2026 · CDC Indicators</p>
     <h1>Mind the Gap</h1>
     <p class="lead">Explore how population-level mental-health indicators vary by year, place, and population.</p>
-    <p>Compare CDC data, explore trends, and identify gaps in available information.</p>
+    <p>Compare CDC data, explore trends, and identify gaps in available information through an interactive application.</p>
   </div>
 </header>
 
@@ -309,10 +309,10 @@ footer {
 
   <section id="project-overview">
     <p class="kicker section-kicker">01 · Project Overview</p>
-    <h2>A clearer view of mental-health data</h2>
+    <h2>A clearer view of mental health data</h2>
 
     <p class="intro">
-      Mental-health data can be difficult to compare because information varies
+      The CDC Mental health data can be difficult to compare because information varies
       across years, locations, and populations, and some groups have missing data.
       Mind the Gap brings CDC data into one interactive application where users
       can explore trends, compare groups, and identify gaps in available information.
@@ -320,31 +320,30 @@ footer {
 
     <div class="grid">
       <div class="card">
-        <h3>What it does</h3>
-        <p>Allows users to filter CDC mental-health data, compare results, view trends, and get AI-generated summaries.</p>
+        <h3>What it does?</h3>
+        <p>Allows users to filter CDC mental-health data, compare results, view trends, identify limiations and get a short summary.</p>
       </div>
 
       <div class="card">
-        <h3>Who it's for</h3>
+        <h3>Who it's for?</h3>
         <p>Public health students, researchers, and healthcare organizations exploring population-level mental-health trends.</p>
       </div>
 
       <div class="card">
         <h3>Purpose</h3>
-        <p>Make it easier to understand mental-health data and identify differences or gaps that may need further research.</p>
+        <p>Make it easier to understand mental health data and identify differences or gaps that may need further research.</p>
       </div>
     </div>
 
     <div class="callout">
-      <strong>From midterm to final project.</strong>
-      My midterm explored mental-health trends in CDC data. Mind the Gap builds on
-      that work by turning the data into an interactive application.
-      <a href="https://faleeqwesa.github.io/530_Midtermproject_FatimaAleem/" target="_blank" rel="noopener">View my midterm project</a>.
+      <strong>Midterm --> Final project:</strong>
+      My midterm website explored mental-health trends in CDC data. Mind the Gap builds on that work by turning the data into an interactive application.
+      <a href="https://faleeqwesa.github.io/530_Midtermproject_FatimaAleem/" target="_blank" rel="noopener">Link my midterm project website</a>.
     </div>
   </section>
 
   <section id="data">
-    <p class="kicker section-kicker">02 · Dataset</p>
+    <p class="kicker section-kicker">02 · Data</p>
     <h2>CDC U.S. Chronic Disease Indicators</h2>
 
     <p>
@@ -357,10 +356,10 @@ footer {
       <div class="card">
         <h3>Dataset</h3>
         <ul>
-          <li>21,883 mental-health records in the saved dataset</li>
-          <li>Five mental-health questions</li>
-          <li>2019–2023 coverage in the saved snapshot</li>
-          <li>Includes percentages and average mentally unhealthy days</li>
+          <li>Mental Health Filtered: 21,883 rows, 24 colums</li>
+          <li>Five mental health related questions</li>
+          <li>Dataset goes from years 2019-2023</li>
+          <li>Includes percentages and days values</li>
         </ul>
       </div>
 
@@ -371,7 +370,7 @@ footer {
 
       <div class="card">
         <h3>Comparisons</h3>
-        <p>Questions can use different units and estimate types, so the application keeps those measures separate.</p>
+        <p>Questions can use different units and estimate types, so the application keeps those measures separate. Addtionally, any comparision edits to only have filtering options that match that filter.</p>
       </div>
     </div>
   </section>
@@ -381,52 +380,49 @@ footer {
     <h2>How it works</h2>
 
     <p class="intro">
-      Users select filters, and the application retrieves and analyzes the matching
-      CDC data before generating an explanation of the results.
+      The users select filters, and the application retrieves and analyzes the matching
+      CDC data before generating a summary and bar graph of the results.
     </p>
 
     <div class="workflow" aria-label="Application workflow">
       <div class="step">
         <b>1 · Select filters</b>
-        <span>Choose questions, years, locations, and population groups.</span>
+        <span>Choose questions, years, locations, category groups, and comparison filters.</span>
       </div>
 
       <div class="step">
         <b>2 · Retrieve data</b>
-        <span>The agent retrieves records matching the filters.</span>
+        <span>The AL Agent retrieves CDC Dataset records matching the filters.</span>
       </div>
 
       <div class="step">
         <b>3 · Analyze data</b>
-        <span>Tools check data coverage and analyze the results.</span>
+        <span>Python Tools check data coverage and analyze the results.</span>
       </div>
 
       <div class="step">
         <b>4 · Generate summary</b>
-        <span>The LLM explains the results using the analysis.</span>
+        <span>The LLM explains the results in a small summary using the analysis.</span>
       </div>
     </div>
 
     <p>
-      Users provide the filters as input and receive visualizations and an
-      AI-generated summary. This helps them decide which trends or population
-      groups they want to explore further.
+      Overall, the users provide the filters as an input and receives a bar graph visualization and an summary. This helps the users decide which trends or population groups they want to explore further or what they want to do with the information provided.
     </p>
 
     <div class="grid">
       <div class="card">
         <h3>AI Agent and LLM</h3>
-        <p>The agent follows a multi-step workflow using three tools to retrieve CDC data, check data quality and coverage, and analyze results. A separate OpenAI request uses the results to generate a summary in natural language.</p>
-      </div>
+        <p>The AI Agent follows a Python workflow using three tools to retrieve CDC data, check data quality and coverage, and analyze results. A separate LLM through an OpenAI request uses the results to generate a natural-language summary.</p>      </div>
 
       <div class="card">
         <h3>Linear Regression</h3>
-        <p>The application uses scikit-learn linear regression to analyze historical yearly trends when enough data is available. Yearly values are used to fit the trend. This helps users understand the direction of a trend but does not establish causes or predict future outcomes.</p>
+        <p>For ML I had this interactive application uses scikit-learn linear regression to analyze historical yearly trends when enough data is available. Yearly values are used to fit the trend. <small><b>This helps users understand the direction of a trend but does not establish causes or predict future outcomes.</b></small></p>
       </div>
 
       <div class="card">
         <h3>Data Checks</h3>
-        <p>Missing values and unavailable years are shown so users can see where data is limited. The AI is instructed not to invent values or make causal claims.</p>
+        <p>Missing values and unavailable values are shown so users can see where data is limited. Missing values are not factored into the calculations as missing does not mean zero.</p>
       </div>
     </div>
   </section>
@@ -435,32 +431,26 @@ footer {
     <p class="kicker section-kicker">04 · Application</p>
     <h2>Try Mind the Gap</h2>
 
-    <p class="intro">
+    <div class="callout">
+      <strong>Example interaction:</strong>
       Select a mental-health question, estimate type, year range, locations, and
       demographic groups. The application displays the matching results,
       visualizations, and an AI-generated summary.
-    </p>
-
-    <div class="callout">
-      <strong>Example interaction:</strong>
-      Select a mental-health question, choose a year range and locations, and
-      compare population groups. The application displays the matching data
-      and explains the results.
     </div>
 
     <p>
-      The application also includes an optional review that checks a generated
-      summary against 20 evaluation questions. It displays the AI's answer,
+      The application also includes a section that checks the generated
+      summary against 20 listed questions. It displays the question,
       expected answer, and whether each response passed or failed.
     </p>
 
     <p>
-      <a class="button" href="https://mind-the-gap-mental-health.streamlit.app/" target="_blank" rel="noopener">Open the interactive application</a>
+      <a class="button" href="https://mind-the-gap-mental-health.streamlit.app/" target="_blank" rel="noopener">Link to interactive application</a>
     </p>
 
     <div class="frame-wrap">
       <div class="frame-top">
-        Mind the Gap · Interactive explorer
+        Mind the Gap · Interactive Application
       </div>
 
       <iframe
@@ -471,58 +461,36 @@ footer {
       </iframe>
     </div>
 
-    <p class="small">If the application does not load here, use the link above to open it separately.</p>
+    <p class="small">If you would like, use the link above to open it in a separate tab.</p>
   </section>
 
   <section id="benchmark">
   <p class="kicker section-kicker">05 · Benchmark</p>
-  <h2>Testing the AI summary</h2>
+  <h2>Benchmarking the summary</h2>
 
   <p class="intro">
-    I used 20 evaluation questions to test how accurately the AI-generated
-    summary explains the selected CDC data.
+    I used 20 evaluation questions to test how accurately the
+    AI Agent summary explains the selected CDC filtering the usered did.
   </p>
 
-  <h3>How I tested it</h3>
+  <h3>Testing benchmarks</h3>
   <p>
     I compared the AI-generated summary against each of the 20 questions.
     Each answer was marked Pass or Fail based on whether it correctly
-    explained the data and avoided unsupported claims.
+    explained the data and listed the limiations. In the interactive application, the user can see x/20 questions that passed.
   </p>
-
-  <h3>Results</h3>
-  <p>
-    The evaluation tracks how many of the 20 questions the AI summary
-    answered correctly. Each question is scored individually.
-  </p>
-
-  <div class="callout">
-    <strong>Scoring:</strong>
-    Number of questions passed ÷ 20 × 100.
-  </div>
-
-  <h3>What I would improve</h3>
+    
+  <h3>Improvements or next steps</h3>
   <ul>
-    <li>Make summaries clearer when comparing population groups and years.</li>
-    <li>Improve how summaries explain missing or unavailable data.</li>
+    <li>Make summaries clearer and in a more bullet point format to make it easier to read.</li>
+    <li>In the limiations include more than just the years missing, but also other data points if mising</li>
   </ul>
 
-  <p>
-    The evaluation uses rule-based scoring rather than an LLM judge.
-    The questions and evaluation code are available in the
-    <a href="https://github.com/Faleeqwesa/mind-the-gap-mental-health"
-       target="_blank" rel="noopener">project repository</a>.
-  </p>
 </section>
 
   <section id="walkthrough">
-    <p class="kicker section-kicker">06 · Project Walkthrough</p>
-    <h2>See Mind the Gap in action</h2>
-
-    <p class="intro">
-      This walkthrough shows the user problem, how to select filters,
-      explore results, and review the AI-generated summary.
-    </p>
+    <p class="kicker section-kicker">06 · Walkthrough</p>
+    <h2>Walkthrough of Mind the Gap</h2>
 
     <div class="frame-wrap">
       <div class="frame-top">
@@ -540,8 +508,8 @@ footer {
   </section>
 
   <section id="limits">
-    <p class="kicker section-kicker">07 · Limitations &amp; Resources</p>
-    <h2>What to keep in mind</h2>
+    <p class="kicker section-kicker">07 · Limitations & Design Decisions</p>
+    <h2>Keep in mind</h2>
 
     <ul>
       <li>Data availability varies by question, location, year, and population.</li>
@@ -550,33 +518,25 @@ footer {
       <li>AI summaries can miss details or misstate results, so users should review the data alongside the explanation.</li>
     </ul>
 
-    <h3>Design Decisions</h3>
+    <h3>Design Decisions I made</h3>
 
     <div class="grid">
       <div class="card">
-        <h3>Filter-Based Exploration</h3>
-        <p>I used filters instead of a general chatbot so users could choose the specific questions, years, locations, and populations they wanted to compare.</p>
+        <h3>Design decision 1: Filtering section</h3>
+        <p>I used filters instead of a general text so users could choose the specific questions, years, locations, and populations they wanted to compare without the possibility of selecting filters that do not exisit in the dataset</p>
       </div>
 
       <div class="card">
-        <h3>Showing Missing Data</h3>
-        <p>I chose to display missing values and unavailable years instead of treating them as zero, so users can better understand the limits of the data.</p>
+        <h3>Design decision 2: Missing Data</h3>
+        <p>I chose to display missing values and unavailable years in a bar graph instead of a line graph, so users can better understand the limits of the data. As well as listing any years missing.</p>
       </div>
     </div>
-
-    <p>
-      <strong>Resources:</strong>
-      <a href="https://github.com/Faleeqwesa/mind-the-gap-mental-health" target="_blank" rel="noopener">GitHub repository</a>
-      ·
-      <a href="https://data.cdc.gov/Chronic-Disease-Indicators/U-S-Chronic-Disease-Indicators/hksd-2xuw/about_data" target="_blank" rel="noopener">CDC dataset</a>
-    </p>
   </section>
 
 </main>
 
 <footer>
   <p><strong>Mind the Gap</strong> · DESIGNTK 530 · Fall 2026</p>
-  <p>Population-level estimates are not individual mental-health assessments.</p>
 </footer>
 
 </body>
