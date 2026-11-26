@@ -169,7 +169,7 @@ section {
 
 .workflow {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   gap: 14px;
   margin: 20px 0;
 }
@@ -281,7 +281,6 @@ footer {
 @media (max-width: 760px) {
   header { padding: 18px 17px 38px; }
   nav { margin-bottom: 30px; }
-  .workflow { grid-template-columns: 1fr; }
   main, footer { padding: 13px; }
   .frame-top { flex-wrap: wrap; }
   .app-frame { height: 1200px; }
