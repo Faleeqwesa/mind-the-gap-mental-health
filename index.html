@@ -393,27 +393,47 @@ footer {
       <p> The users provide filters as input and receive a bar graph, data coverage information, and a summary. The AI Agent retrieves and analyzes the data, while a separate OpenAI API request generates a natural-language explanation. Linear regression separately identifies historical trends. The users can then decide which trends or population groups they want to explore further and what they want to do with the infromation.</p>
     </p>
 
-   <div class="workflow" aria-label="Application workflow">
+   
+<div class="workflow" aria-label="Application workflow">
+
   <div class="step">
-    <b>1 · Select filters</b>
-    <span>Users choose the CDC question, estimate type, years, locations, and population groups.</span>
+    <b>1 · User Input & Web Interface</b>
+    <span>
+      Users select CDC mental-health questions, estimate types,
+      years, locations, and population groups through the
+      Streamlit interface.
+    </span>
   </div>
 
   <div class="step">
-    <b>2 · Retrieve and analyze data</b>
-    <span>The AI Agent uses Python tools to retrieve matching CDC records, check data coverage, and analyze results.</span>
+    <b>2 · AI Agent & Data Retrieval</b>
+    <span>
+      The Python AI Agent coordinates three tools to retrieve
+      matching CDC records, check data quality and coverage,
+      and analyze the selected data.
+    </span>
   </div>
 
   <div class="step">
-    <b>3 · Display results</b>
-    <span>The application displays a bar graph, data coverage, and an AI-generated summary.</span>
+    <b>3 · LLM Summary & Results</b>
+    <span>
+      A separate OpenAI API request generates a natural-language
+      summary using the analyzed results. The application
+      displays the summary, bar graph, and data coverage.
+    </span>
   </div>
 
   <div class="step">
-    <b>4 · Calculate historical trends</b>
-    <span>Scikit-learn linear regression separately calculates the historical trend for each comparison group.</span>
+    <b>4 · Traditional ML: Linear Regression</b>
+    <span>
+      Scikit-learn linear regression independently calculates
+      historical trends for the selected comparison groups.
+      Users can explore how indicators change over time.
+    </span>
   </div>
+
 </div>
+
 
     <div class="grid">
       <div class="card">
