@@ -384,30 +384,25 @@ footer {
       CDC data before generating a summary and bar graph of the results.
     </p>
 
-    <div class="workflow" aria-label="Application workflow">
+   <div class="workflow" aria-label="Application workflow">
   <div class="step">
     <b>1 · Select filters</b>
-    <span>Users choose questions, years, locations, and population groups.</span>
+    <span>Users choose the CDC question, estimate type, years, locations, and population groups.</span>
   </div>
 
   <div class="step">
-    <b>2 · Retrieve data</b>
-    <span>The Python-based AI Agent retrieves matching CDC records using its tools.</span>
+    <b>2 · Retrieve and analyze data</b>
+    <span>The AI Agent uses Python tools to retrieve matching CDC records, check data coverage, and analyze results.</span>
   </div>
 
   <div class="step">
-    <b>3 · Analyze data</b>
-    <span>Python tools check data quality, coverage, and analyze the selected results.</span>
+    <b>3 · Display results</b>
+    <span>The application displays a bar graph, data coverage, and an AI-generated summary.</span>
   </div>
 
   <div class="step">
-    <b>4 · Apply ML</b>
-    <span>Linear regression analyzes historical yearly trends when enough data is available.</span>
-  </div>
-
-  <div class="step">
-    <b>5 · Generate summary</b>
-    <span>The LLM uses the analysis results to generate a natural-language explanation.</span>
+    <b>4 · Calculate historical trends</b>
+    <span>Scikit-learn linear regression separately calculates the historical trend for each comparison group.</span>
   </div>
 </div>
 
