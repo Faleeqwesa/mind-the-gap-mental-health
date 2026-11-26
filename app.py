@@ -112,7 +112,7 @@ if st.button("Generate graph and Summary", type="primary"):
                 if (answer.get("retrieval") or {}).get("matching_rows", 0):
                     st.warning("Matching CDC records were found, but none contain numeric values to graph.")
                 else:
-                    st.warning("No CDC rows match these filters. Try another year, group, or estimate.")
+                    st.warning("No CDC rows match these filters. Please edit the filters and try again.")
             else:
                 d["Compare"] = d["YearStart"].astype(str) if compare == "Year" else d["LocationDesc"] if compare == "Location" else d["Stratification1"]
                 if compare in ("Location", "Year") and len(groups) > 1:
@@ -194,7 +194,7 @@ if st.button("Generate graph and Summary", type="primary"):
                     st.info("A linear trend needs observed values from more than one year.")
 
         except Exception as e:
-            st.error("This comparison is not possible, due to lack of available data. Try again or adjust the selected filters.")
+            st.error("This comparison is not possible with the selected data. Please edit the filters and try again.")
             with st.expander("Technical details"):
                 st.caption(type(e).__name__)
 
