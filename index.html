@@ -169,7 +169,7 @@ section {
 
 .workflow {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 14px;
   margin: 20px 0;
 }
@@ -385,30 +385,33 @@ footer {
     </p>
 
     <div class="workflow" aria-label="Application workflow">
-      <div class="step">
-        <b>1 · Select filters</b>
-        <span>Choose questions, years, locations, category groups, and comparison filters.</span>
-      </div>
+  <div class="step">
+    <b>1 · Select filters</b>
+    <span>Users choose questions, years, locations, and population groups.</span>
+  </div>
 
-      <div class="step">
-        <b>2 · Retrieve data</b>
-        <span>The AL Agent retrieves CDC Dataset records matching the filters.</span>
-      </div>
+  <div class="step">
+    <b>2 · Retrieve data</b>
+    <span>The Python-based AI Agent retrieves matching CDC records using its tools.</span>
+  </div>
 
-      <div class="step">
-        <b>3 · Analyze data</b>
-        <span>Python Tools check data coverage and analyze the results.</span>
-      </div>
+  <div class="step">
+    <b>3 · Analyze data</b>
+    <span>Python tools check data quality, coverage, and analyze the selected results.</span>
+  </div>
 
-      <div class="step">
-        <b>4 · Generate summary</b>
-        <span>The LLM explains the results in a small summary using the analysis.</span>
-      </div>
-    </div>
+  <div class="step">
+    <b>4 · Apply ML</b>
+    <span>Linear regression analyzes historical yearly trends when enough data is available.</span>
+  </div>
 
-    <p>
-      Overall, the users provide the filters as an input and receives a bar graph visualization and an summary. This helps the users decide which trends or population groups they want to explore further or what they want to do with the information provided.
-    </p>
+  <div class="step">
+    <b>5 · Generate summary</b>
+    <span>The LLM uses the analysis results to generate a natural-language explanation.</span>
+  </div>
+</div>
+
+    <p> The users provide filters as input and receive a bar graph and a summary. The AI Agent retrieves and analyzes the data, linear regression identifies historical trends, and the LLM explains the results. From this the user can then decide which trends or population groups they want to explore further and whar they would like to do with the provided information.    </p>
 
     <div class="grid">
       <div class="card">
@@ -416,13 +419,17 @@ footer {
         <p>The AI Agent follows a Python workflow using three tools to retrieve CDC data, check data quality and coverage, and analyze results. A separate LLM through an OpenAI request uses the results to generate a natural-language summary.</p>      </div>
 
       <div class="card">
-        <h3>Linear Regression</h3>
-        <p>For ML I had this interactive application uses scikit-learn linear regression to analyze historical yearly trends when enough data is available. Yearly values are used to fit the trend. <p><small><b>This helps users understand the direction of a trend but does not establish causes or predict future outcomes.</b></small></p></p>
-      </div>
+  <h3>Linear Regression</h3>
+  <p> The interactive application uses scikit-learn linear regression to analyze historical trends. This helps look at how a the selected mental health indicator has changed over time?
+  </p>
+  <p>
+    <small><b> This helps users understand the direction of a trend but does not establish causes or predict future outcomes.</b></small>
+  </p>
+</div>
 
       <div class="card">
-        <h3>Data Checks</h3>
-        <p>Missing values and unavailable values are shown so users can see where data is limited. Missing values are not factored into the calculations as missing does not mean zero.</p>
+        <h3>Guardrails</h3>
+        <p>Missing values and unavailable values are shown so users can see where data is limited. Missing values are not factored into the calculations as missing does not mean zero. Summaries are based on the CDC data set only.</p>
       </div>
     </div>
   </section>
@@ -485,6 +492,7 @@ footer {
     <li>Make summaries clearer and in a more bullet point format to make it easier to read.</li>
     <li>In the data coverage include more than just the years missing, but also other data points if mising</li>
   </ul>
+    <p><b>What I learned:</b> The benchmarking showed me that while the summaries look like they match and explain what it should, benchmarking proved something at time could still be missing. The summary should not be taken without proof reading it.</p>
 
 </section>
 
