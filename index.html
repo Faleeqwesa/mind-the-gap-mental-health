@@ -475,77 +475,45 @@ footer {
   </section>
 
   <section id="benchmark">
-    <p class="kicker section-kicker">05 · Benchmark</p>
-    <h2>Testing the AI summary</h2>
+  <p class="kicker section-kicker">05 · Benchmark</p>
+  <h2>Testing the AI summary</h2>
 
-    <p class="intro">
-      I tested how well the AI Agent summarized CDC data and whether it included
-      the information users need to understand the results.
-    </p>
+  <p class="intro">
+    I used 20 evaluation questions to test how accurately the AI-generated
+    summary explains the selected CDC data.
+  </p>
 
-    <p>
-      The benchmark uses 20 filter scenarios, with 20 evaluation questions for
-      each scenario, for a total of 400 checks. The scenarios cover different
-      filter combinations and data availability situations. Each check evaluates
-      whether the summary accurately explains the selected data, comparisons,
-      and missing information without making unsupported claims.
-    </p>
+  <h3>How I tested it</h3>
+  <p>
+    I compared the AI-generated summary against each of the 20 questions.
+    Each answer was marked Pass or Fail based on whether it correctly
+    explained the data and avoided unsupported claims.
+  </p>
 
-    <div class="grid">
-      <div class="scorecard">
-        <div class="score-head">
-          <h3>AI Agent</h3>
-          <span class="score-num">79.75%</span>
-        </div>
-        <div class="track">
-          <div class="fill" style="width:79.75%"></div>
-        </div>
-        <p><strong>319 / 400 checks passed</strong></p>
-      </div>
+  <h3>Results</h3>
+  <p>
+    The evaluation tracks how many of the 20 questions the AI summary
+    answered correctly. Each question is scored individually.
+  </p>
 
-      <div class="scorecard baseline">
-        <div class="score-head">
-          <h3>Filters-only baseline</h3>
-          <span class="score-num">45%</span>
-        </div>
-        <div class="track">
-          <div class="fill" style="width:45%"></div>
-        </div>
-        <p><strong>180 / 400 checks passed</strong></p>
-      </div>
-    </div>
+  <div class="callout">
+    <strong>Scoring:</strong>
+    Number of questions passed ÷ 20 × 100.
+  </div>
 
-    <p>
-      The filters-only baseline provides a comparison without the AI Agent's
-      additional analysis and summary generation. The AI Agent passed more
-      checks, but the results also showed areas where summaries could improve.
-    </p>
+  <h3>What I would improve</h3>
+  <ul>
+    <li>Make summaries clearer when comparing population groups and years.</li>
+    <li>Improve how summaries explain missing or unavailable data.</li>
+  </ul>
 
-    <h3>What I found</h3>
-    <p>
-      Some summaries did not clearly explain how many groups were being compared
-      or which years they had in common. Scenarios without numeric values also
-      showed a limitation in the scoring approach.
-    </p>
-
-    <h3>What I would improve</h3>
-    <ul>
-      <li>Make summaries clearer about comparison groups and shared years.</li>
-      <li>Adjust scoring when no numeric values are available, so summaries are not marked down for missing trends that cannot be calculated.</li>
-    </ul>
-
-    <p>
-      The benchmark uses rule-based scoring, not an LLM judge. The test cases,
-      scoring code, and results are available in the
-      <a href="https://github.com/Faleeqwesa/mind-the-gap-mental-health" target="_blank" rel="noopener">project repository</a>.
-    </p>
-
-    <p class="small">
-      To reproduce the benchmark, install dependencies using
-      <code>python -m pip install -r requirements.txt</code>
-      and run <code>python benchmark/run.py</code>.
-    </p>
-  </section>
+  <p>
+    The evaluation uses rule-based scoring rather than an LLM judge.
+    The questions and evaluation code are available in the
+    <a href="https://github.com/Faleeqwesa/mind-the-gap-mental-health"
+       target="_blank" rel="noopener">project repository</a>.
+  </p>
+</section>
 
   <section id="walkthrough">
     <p class="kicker section-kicker">06 · Project Walkthrough</p>
