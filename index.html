@@ -169,7 +169,7 @@ section {
 
 .workflow {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
   margin: 20px 0;
 }
@@ -389,24 +389,36 @@ footer {
     <p class="kicker section-kicker">03 · System Design</p>
     <h2>How it works</h2>
 
-    <p class="intro">
-      <p> The users provide filters as input and receive a bar graph, data coverage information, and a summary. The AI Agent retrieves and analyzes the data, while a separate OpenAI API request generates a natural-language explanation. Linear regression separately identifies historical trends. The users can then decide which trends or population groups they want to explore further and what they want to do with the infromation.</p>
-    </p>
+    
+<p class="intro">
+  Users provide filters through the Streamlit interface to explore CDC mental-health indicators. The Python backend coordinates an AI Agent workflow that retrieves the selected CDC data, checks data quality and coverage, and analyzes the results using three Python tools. The analyzed results are passed to a separate OpenAI API request to generate a natural-language summary. Independently, scikit-learn linear regression calculates historical trends for the selected comparison groups. The application brings these outputs together through visualizations, data coverage information, and an AI-generated summary to help users compare populations and understand changes over time.
+</p>
+
 
    
 <div class="workflow" aria-label="Application workflow">
 
+ 
+<div class="workflow" aria-label="Application workflow">
+
   <div class="step">
-    <b>1 · User Input & Web Interface</b>
+    <b>1 · User Input</b>
     <span>
-      Users select CDC mental-health questions, estimate types,
-      years, locations, and population groups through the
-      Streamlit interface.
+      Users select mental-health questions, estimate types,
+      years, locations, and population groups to explore.
     </span>
   </div>
 
   <div class="step">
-    <b>2 · AI Agent & Data Retrieval</b>
+    <b>2 · Web Interface</b>
+    <span>
+      The Streamlit interface collects user selections
+      and sends the requested filters to the Python backend.
+    </span>
+  </div>
+
+  <div class="step">
+    <b>3 · AI Agent & Data Retrieval</b>
     <span>
       The Python AI Agent coordinates three tools to retrieve
       matching CDC records, check data quality and coverage,
@@ -415,22 +427,35 @@ footer {
   </div>
 
   <div class="step">
-    <b>3 · LLM Summary & Results</b>
+    <b>4 · LLM Summary</b>
     <span>
-      A separate OpenAI API request generates a natural-language
-      summary using the analyzed results. The application
-      displays the summary, bar graph, and data coverage.
+      A separate OpenAI API request uses the analyzed results
+      to generate a natural-language explanation of the
+      selected mental-health indicators.
     </span>
   </div>
 
   <div class="step">
-    <b>4 · Traditional ML: Linear Regression</b>
+    <b>5 · Traditional ML Analysis</b>
     <span>
       Scikit-learn linear regression independently calculates
-      historical trends for the selected comparison groups.
-      Users can explore how indicators change over time.
+      historical trends for the selected comparison groups,
+      showing how indicators change over time.
     </span>
   </div>
+
+  <div class="step">
+    <b>6 · Results & User Decisions</b>
+    <span>
+      The application displays bar graphs, data coverage,
+      historical trends, and the AI-generated summary.
+      Users can compare populations and decide which trends
+      or data gaps need further exploration.
+    </span>
+  </div>
+
+</div>
+
 
 </div>
 
