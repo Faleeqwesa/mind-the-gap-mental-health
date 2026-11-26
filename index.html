@@ -295,8 +295,7 @@ footer {
     <a href="#benchmark">Benchmark</a>
     <a href="#walkthrough">Walkthrough</a>
     <a href="#limits">Limitations</a>
-    <a href="#limits">resources</a>
-
+    <a href="#resources">Resources</a>
   </nav>
 
   <div class="hero">
@@ -382,8 +381,7 @@ footer {
     <h2>How it works</h2>
 
     <p class="intro">
-      The users select filters, and the application retrieves and analyzes the matching
-      CDC data before generating a summary and bar graph of the results.
+      <p> The users provide filters as input and receive a bar graph, data coverage information, and a summary. The AI Agent retrieves and analyzes the data, while a separate OpenAI API request generates a natural-language explanation. Linear regression separately identifies historical trends. The users can then decide which trends or population groups they want to explore further and what they want to do with the infromation.</p>
     </p>
 
    <div class="workflow" aria-label="Application workflow">
@@ -413,11 +411,11 @@ footer {
     <div class="grid">
       <div class="card">
         <h3>AI Agent and LLM</h3>
-        <p>The AI Agent follows a Python workflow using three tools to retrieve CDC data, check data quality and coverage, and analyze results. A separate LLM through an OpenAI request uses the results to generate a natural-language summary.</p>      </div>
+        <p>The AI Agent follows a Python workflow using three tools to retrieve CDC data, check data quality and coverage, and analyze results. A separate LLM through an OpenAI request uses the results to generate a summary.</p>      </div>
 
       <div class="card">
   <h3>Linear Regression</h3>
-  <p> The interactive application uses scikit-learn linear regression to analyze historical trends. This helps look at how a the selected mental health indicator has changed over time? <small><p><b>This is shown in my interactive application.</b></small></p>
+  <p> The interactive application uses scikit-learn linear regression to analyze historical trends. This helps look at the question of how a the selected mental health indicator has changed over time? <small><p><b>This is shown in my interactive application.</b></small></p>
   </p>
   <p>
     <small><b> This helps users understand the direction of a trend but does not establish causes or predict future outcomes.</b></small>
