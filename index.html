@@ -403,8 +403,8 @@ footer {
   <div class="step">
     <b>1 · User Input</b>
     <span>
-      Users select mental-health questions, estimate types,
-      years, locations, and population groups to explore.
+      Users select mental health questions, estimate types,
+      years, locations, and groups to explore.
     </span>
   </div>
 
@@ -412,14 +412,14 @@ footer {
     <b>2 · Web Interface</b>
     <span>
       The Streamlit interface collects user selections
-      and sends the requested filters to the Python backend.
+      and sends the requested filters to the Python.
     </span>
   </div>
 
   <div class="step">
     <b>3 · AI Agent & Data Retrieval</b>
     <span>
-      The Python AI Agent coordinates three tools to retrieve
+      The AI Agent works with the three tools to retrieve
       matching CDC records, check data quality and coverage,
       and analyze the selected data.
     </span>
@@ -429,13 +429,12 @@ footer {
     <b>4 · LLM Summary</b>
     <span>
       A separate OpenAI API request uses the analyzed results
-      to generate a natural-language explanation of the
-      selected mental-health indicators.
+      to generate a explanation of the selected mental health indicators.
     </span>
   </div>
 
   <div class="step">
-    <b>5 · Traditional ML Analysis</b>
+    <b>5 · ML Analysis</b>
     <span>
       Scikit-learn linear regression independently calculates
       historical trends for the selected comparison groups,
